@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace ThreadingOpdracht1
 {
-    class ReadFiles
+    class FileReader
     {
         public int[] top10;
         public List<String> files;
 
-        public ReadFiles()
+        public FileReader()
         {
-            readFile("C:/Users/school/Documents/GitHub/ThreadingHomework/Bestanden Opdr1/Bestanden.txt");
+            file("C:/Users/school/Documents/GitHub/ThreadingHomework/Bestanden Opdr1/Bestanden.txt");
             for(int i = 0; i < files.Count; i++)
             {
-                ReadFile readfile = new ReadFile();
+                Counter readfile = new Counter();
 
-                Thread thread = new Thread(new ThreadStart(readfile.Read));
+                Thread thread = new Thread(new ThreadStart(new Counter(readfile)));
                 thread.Start();
 
                 while (!thread.IsAlive) ;
@@ -35,9 +35,8 @@ namespace ThreadingOpdracht1
             }
  
         }
-        public void readFile(string fileName)
+        public void file(string fileName)
         {
-            
             try
             {
                 using (StreamReader sr = new StreamReader(fileName))

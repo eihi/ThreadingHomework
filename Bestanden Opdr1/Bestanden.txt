@@ -1,5 +1,5 @@
-Bestand1.txt
-Bestand2.txt
-Bestand3.txt
-Bestand4.txt
-Bestand5.txt
+C:\Users\st\Documents\GitHub\ThreadingHomework\Bestanden Opdr1\Bestand1.txt
+C:\Users\st\Documents\GitHub\ThreadingHomework\Bestanden Opdr1\Bestand2.txt
+C:\Users\st\Documents\GitHub\ThreadingHomework\Bestanden Opdr1\Bestand3.txt
+C:\Users\st\Documents\GitHub\ThreadingHomework\Bestanden Opdr1\Bestand4.txt
+C:\Users\st\Documents\GitHub\ThreadingHomework\Bestanden Opdr1\Bestand5.txt
