@@ -34,14 +34,6 @@ namespace ThreadingOpdracht1
 
                 thread.Start(files[i]);
 
-                while (!thread.IsAlive) ;
-
-                Thread.Sleep(1);
-
-                thread.Abort();
-
-                thread.Join();
-
                 scoreBoard.addResult(files[i], f.found.ToString());
 
                 Console.WriteLine("Thread has finished");

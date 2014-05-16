@@ -31,6 +31,7 @@ namespace ThreadingOpdracht1
 
         public void addResult(string file, string number) 
         {
+            // TODO Create critical section
             List<string> tempList = new List<string>();
             tempList.Add(file); 
             tempList.Add(number);

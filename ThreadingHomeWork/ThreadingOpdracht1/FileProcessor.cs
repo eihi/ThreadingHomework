@@ -33,7 +33,7 @@ namespace ThreadingOpdracht1
             }
             catch (Exception e)
             {
-                //Console.WriteLine("Er ging iets mis.");
+                Console.WriteLine("Er ging iets mis.");
                 Console.WriteLine(e.Message);
             }
             return files;
