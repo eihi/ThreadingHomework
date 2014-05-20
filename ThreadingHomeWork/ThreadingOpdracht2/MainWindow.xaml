@@ -3,38 +3,38 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="387.811" Width="525" ResizeMode="NoResize">
     <Grid>
-        <TextBox Name="StartingUrl" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="419"/>
+        <TextBox Name="StartingUrl" Text="www.website.com" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="419"/>
         <Button Content="Start" HorizontalAlignment="Left" Margin="434,10,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="startCrawling"/>
-        <Label Content="Url" HorizontalAlignment="Left" Margin="182,38,0,0" VerticalAlignment="Top" Width="327"/>
-        <ProgressBar Value="0" HorizontalAlignment="Left" Height="26" Margin="10,38,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="No Thread active" HorizontalAlignment="Left" Margin="10,39,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="Url" HorizontalAlignment="Left" Margin="182,69,0,0" VerticalAlignment="Top" Width="327"/>
-        <ProgressBar HorizontalAlignment="Left" Height="26" Margin="10,69,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="No Thread active" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="Url" HorizontalAlignment="Left" Margin="182,100,0,0" VerticalAlignment="Top" Width="327"/>
-        <ProgressBar HorizontalAlignment="Left" Height="26" Margin="10,100,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="No Thread active" HorizontalAlignment="Left" Margin="10,101,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="Url" HorizontalAlignment="Left" Margin="182,131,0,0" VerticalAlignment="Top" Width="327"/>
-        <ProgressBar HorizontalAlignment="Left" Height="26" Margin="10,131,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="No Thread active" HorizontalAlignment="Left" Margin="10,132,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="Url" HorizontalAlignment="Left" Margin="182,162,0,0" VerticalAlignment="Top" Width="327"/>
-        <ProgressBar HorizontalAlignment="Left" Height="26" Margin="10,162,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="No Thread active" HorizontalAlignment="Left" Margin="10,163,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="Url" HorizontalAlignment="Left" Margin="182,194,0,0" VerticalAlignment="Top" Width="327"/>
-        <ProgressBar HorizontalAlignment="Left" Height="26" Margin="10,194,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="No Thread active" HorizontalAlignment="Left" Margin="10,195,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="Url" HorizontalAlignment="Left" Margin="182,226,0,0" VerticalAlignment="Top" Width="327"/>
-        <ProgressBar HorizontalAlignment="Left" Height="26" Margin="10,226,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="No Thread active" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="Url" HorizontalAlignment="Left" Margin="182,258,0,0" VerticalAlignment="Top" Width="327"/>
-        <ProgressBar HorizontalAlignment="Left" Height="26" Margin="10,258,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="No Thread active" HorizontalAlignment="Left" Margin="10,259,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="Url" HorizontalAlignment="Left" Margin="182,289,0,0" VerticalAlignment="Top" Width="327"/>
-        <ProgressBar HorizontalAlignment="Left" Height="26" Margin="10,289,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="No Thread active" HorizontalAlignment="Left" Margin="10,290,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="Url" HorizontalAlignment="Left" Margin="182,320,0,0" VerticalAlignment="Top" Width="327"/>
-        <ProgressBar HorizontalAlignment="Left" Height="26" Margin="10,320,0,0" VerticalAlignment="Top" Width="167"/>
-        <Label Content="No Thread active" HorizontalAlignment="Left" Margin="10,321,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressUrl1" Content="Url" HorizontalAlignment="Left" Margin="182,38,0,0" VerticalAlignment="Top" Width="327"/>
+        <ProgressBar Name="progressBar1" Value="0" HorizontalAlignment="Left" Height="26" Margin="10,38,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressStatus1" Content="No Thread active" HorizontalAlignment="Left" Margin="10,39,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressUrl2" Content="Url" HorizontalAlignment="Left" Margin="182,69,0,0" VerticalAlignment="Top" Width="327"/>
+        <ProgressBar Name="progressBar2" HorizontalAlignment="Left" Height="26" Margin="10,69,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressStatus2" Content="No Thread active" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressUrl3" Content="Url" HorizontalAlignment="Left" Margin="182,100,0,0" VerticalAlignment="Top" Width="327"/>
+        <ProgressBar Name="progressBar3" HorizontalAlignment="Left" Height="26" Margin="10,100,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressStatus3" Content="No Thread active" HorizontalAlignment="Left" Margin="10,101,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressUrl4" Content="Url" HorizontalAlignment="Left" Margin="182,131,0,0" VerticalAlignment="Top" Width="327"/>
+        <ProgressBar Name="progressBar4" HorizontalAlignment="Left" Height="26" Margin="10,131,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressStatus4" Content="No Thread active" HorizontalAlignment="Left" Margin="10,132,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressUrl5" Content="Url" HorizontalAlignment="Left" Margin="182,162,0,0" VerticalAlignment="Top" Width="327"/>
+        <ProgressBar Name="progressBar5" HorizontalAlignment="Left" Height="26" Margin="10,162,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressStatus5" Content="No Thread active" HorizontalAlignment="Left" Margin="10,163,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressUrl6" Content="Url" HorizontalAlignment="Left" Margin="182,194,0,0" VerticalAlignment="Top" Width="327"/>
+        <ProgressBar Name="progressBar6" HorizontalAlignment="Left" Height="26" Margin="10,194,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressStatus6" Content="No Thread active" HorizontalAlignment="Left" Margin="10,195,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressUrl7" Content="Url" HorizontalAlignment="Left" Margin="182,226,0,0" VerticalAlignment="Top" Width="327"/>
+        <ProgressBar Name="progressBar7" HorizontalAlignment="Left" Height="26" Margin="10,226,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressStatus7" Content="No Thread active" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressUrl8" Content="Url" HorizontalAlignment="Left" Margin="182,258,0,0" VerticalAlignment="Top" Width="327"/>
+        <ProgressBar Name="progressBar8" HorizontalAlignment="Left" Height="26" Margin="10,258,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressStatus8" Content="No Thread active" HorizontalAlignment="Left" Margin="10,259,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressUrl9" Content="Url" HorizontalAlignment="Left" Margin="182,289,0,0" VerticalAlignment="Top" Width="327"/>
+        <ProgressBar Name="progressBar9" HorizontalAlignment="Left" Height="26" Margin="10,289,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressStatus9" Content="No Thread active" HorizontalAlignment="Left" Margin="10,290,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressUrl10" Content="Url" HorizontalAlignment="Left" Margin="182,320,0,0" VerticalAlignment="Top" Width="327"/>
+        <ProgressBar Name="progressBar10" HorizontalAlignment="Left" Height="26" Margin="10,320,0,0" VerticalAlignment="Top" Width="167"/>
+        <Label Name="progressStatus10" Content="No Thread active" HorizontalAlignment="Left" Margin="10,321,0,0" VerticalAlignment="Top" Width="167"/>
 
     </Grid>
 </Window>
