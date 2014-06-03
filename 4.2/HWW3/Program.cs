@@ -13,8 +13,8 @@ namespace HWW3
     {
         public const int NPRODUCERS = 6;
         public const int NCONSUMERS = 6;
-        public const int TICK = 1000; // de basis-tijdeenheid in miliseconden
-        public const int NBOXES = 10; // aantal dozen dat een producent maakt en een consument gebruikt
+        public const int TICK = 10; // de basis-tijdeenheid in miliseconden
+        public const int NBOXES = 1000; // aantal dozen dat een producent maakt en een consument gebruikt
         public const int BUFLEN = 5;  // de lengte van de queue
     }
 
@@ -55,6 +55,7 @@ namespace HWW3
 
         public override void handleBox(int i)
         {
+  
             Box box = new Box(name, i);
             q.Put(name, box);
         }
@@ -106,7 +107,7 @@ namespace HWW3
         // Redundant, maar lekker makkelijk!
         private int getpos, putpos;
         private int count;
-        private Object queueLock = new Object();
+        private readonly Object queueLock = new Object();
 
         public Queue()
         {
@@ -117,7 +118,8 @@ namespace HWW3
 
         public Box Get(string consumername)
         {
-            lock (queueLock)
+
+            lock(queueLock)
             {
                 Box box = buffer[getpos];
                 getpos = (getpos + 1) % CONST.BUFLEN;

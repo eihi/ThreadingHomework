@@ -30,12 +30,13 @@ namespace ThreadingOpdracht2
         public MainWindow()
         {
             InitializeComponent();
-            limit = new Semaphore(10, 10);
+            limit = new Semaphore(2, 10);
             Console.WriteLine(directory);
         }
         private void Downloader(string url)
         {
 
+                
                 // thread start
                 Thread thread = new Thread(new ParameterizedThreadStart(HtmlParser));
                 Console.WriteLine("thread has started");

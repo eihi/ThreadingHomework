@@ -13,8 +13,8 @@ namespace HWW3
     {
         public const int NPRODUCERS = 6;
         public const int NCONSUMERS = 6;
-        public const int TICK = 1000; // de basis-tijdeenheid in miliseconden
-        public const int NBOXES = 10; // aantal dozen dat een producent maakt en een consument gebruikt
+        public const int TICK = 10; // de basis-tijdeenheid in miliseconden
+        public const int NBOXES = 1000; // aantal dozen dat een producent maakt en een consument gebruikt
         public const int BUFLEN = 5;  // de lengte van de queue
         
     }
@@ -104,6 +104,7 @@ namespace HWW3
         private Box[] buffer = new Box[CONST.BUFLEN];
         private Semaphore producer;
         private Semaphore consumer;
+        private Semaphore synchronizer;
 
         // Twee indexen en de lengte bijhouden.
         // Redundant, maar lekker makkelijk!
@@ -116,7 +117,8 @@ namespace HWW3
             putpos = 0;
             count = 0;
             producer = new Semaphore(5, 5);
-            consumer = new Semaphore(5, 5);
+            consumer = new Semaphore(0, 5);
+            synchronizer = new Semaphore(1, 1);
         }
 
         public Box Get(string consumername)
@@ -126,18 +128,21 @@ namespace HWW3
             getpos = (getpos + 1) % CONST.BUFLEN;
             count--;
             Console.WriteLine(consumername + ": gets " + box.Id);
-            consumer.Release();
+            producer.Release();
             return box;
         }
 
         public void Put(string producername, Box box)
         {
             producer.WaitOne();
+            synchronizer.WaitOne();
             Console.WriteLine(producername + ": puts " + box.Id);
             buffer[putpos] = box;
             putpos = (putpos + 1) % CONST.BUFLEN;
             count++;
-            producer.Release();
+            synchronizer.Release();
+            consumer.Release();
+            
         }
     }
 
@@ -148,12 +153,13 @@ namespace HWW3
         {
             Queue q = new Queue();
 
-            for (int i = 1; i <= CONST.NPRODUCERS; i++)
-                new Producer("P" + i, q);
-
+  
             for (int i = 1; i <= CONST.NCONSUMERS; i++)
                 new Consumer("C" + i, q);
 
+            for (int i = 1; i <= CONST.NPRODUCERS; i++)
+                new Producer("P" + i, q);
+            
             Console.ReadLine();
         }
     }
