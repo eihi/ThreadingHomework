@@ -10,42 +10,32 @@ namespace Webserver
 {
     class Program
     {
+        private ControlServer controlserver;
         static void Main(string[] args)
         {
-            //TODO: start logger in thread
-            Logger logger = Logger.Instance();
-            //Thread loggerThread = new Thread(logger.get);
 
-
+            Logger logger = new Logger();
             ControlServer controlserver = null;
-           try
+            try
             {
-               //TODO: start server in thread
                controlserver = new ControlServer();
-               if(controlserver.Data.Controlport == null)
-               {
-                   controlserver.Data.Controlport = 8081;
-               }
-               controlserver.startServer(controlserver.Data.Controlport);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Console.WriteLine("controlserver connection failed: " + e);
+                Console.WriteLine("controlserver connection failed: " + e.Message);
             }
             try
             {
-                //TODO: start server in thread
-                Server server = new Server();
-                if (controlserver.Data.Webport != null)
+                if (controlserver != null)
                 {
-                    server.startServer(controlserver.Data.Webport);
+                    Server server = new Server(controlserver.Data);
                 }
-                
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Console.WriteLine("webserver connection failed: " + e);
+                Console.WriteLine("webserver connection failed: " + e.Message);
             }
+            
             Console.ReadLine();
         }
     }

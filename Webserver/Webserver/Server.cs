@@ -3,38 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Webserver
 {
     public class Server
     {
-
-        public Server()
+        ControlData controlData;
+        public Server(ControlData controlData)
         {
-            
+            this.controlData = controlData;
+            Thread webThread = new Thread(startServer);
+            webThread.Start();
         }
-        public void startServer(int port)
+        public void startServer()
         {
-            TcpListener serverSocket = new TcpListener(port);
-            int requestCount = 0;
-            TcpClient clientSocket = default(TcpClient);
+            TcpListener serverSocket = new TcpListener(controlData.Webport);
+            Console.WriteLine("WebServer Started - Listening on port:" + controlData.Webport);
             serverSocket.Start();
+
             while (true)
             {
-                Console.WriteLine("WebServer Started - Listening on port:" + port);
-                Socket sock = serverSocket.AcceptSocket();
-
-                RequestHandler handler = new RequestHandler(sock);
-
+                Socket clientSocket = serverSocket.AcceptSocket();
+                RequestHandler handler = new RequestHandler(clientSocket, controlData);
+                
             }
-            //clientSocket = serverSocket.AcceptTcpClient();
-            Console.WriteLine("WebServer: Accept connection from client");
-
-            /* clientSocket.Close();
-             serverSocket.Stop();
-             Console.WriteLine(" >> exit");*/
-            Console.ReadLine();
         }
     }
 }

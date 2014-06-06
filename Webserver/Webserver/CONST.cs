@@ -9,6 +9,10 @@ namespace Webserver
     public static class CONST
     {
         public const int LOGLENGTH = 20;
-        public const string CONTROLFORM = "controlserver.xml";
+        public const string CONTROLDATA = "controlserver.xml";
+        public const string CONTROLFORM = "";
+        public const string INLOGFORM = "";
+        public const int SECURITY_BEHEERDER = 1;
+        public const int SECURITY_ONDERSTEUN = 2;
     }
 }

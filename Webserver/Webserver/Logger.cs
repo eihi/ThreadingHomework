@@ -9,28 +9,20 @@ namespace Webserver
 {
     public class Logger
     {
-        private static Logger _instance;
         private string[] logFile = new string[CONST.LOGLENGTH];
         private Semaphore getter;
         private Semaphore setter;
         private Semaphore synchronizer;
 
-        protected Logger()
+        public Logger()
         {
             getter = new Semaphore(1,1);
             setter = new Semaphore(0,5);
             synchronizer = new Semaphore(1, 1);
-        }
-        public static Logger Instance()
-        {
-            if(_instance == null)
-            {
-                _instance = new Logger();
-            }
-            return _instance;
+            Thread loggerThread = new Thread(writeToFile);
         }
 
-        public void set(string line)
+        public void logMessage(string line)
         {
             setter.WaitOne();
             synchronizer.WaitOne();
@@ -39,11 +31,11 @@ namespace Webserver
             getter.Release();
         }
 
-        public void get()
+        public void writeToFile()
         {
             getter.WaitOne();
             
-            //get logFile
+            //write line to a file
 
             setter.Release();
         }
