@@ -48,7 +48,7 @@ namespace Webserver
         }
         public void startServer()
         {
-            if (data.Controlport == null)
+            if (data.Controlport.ToString().Length == 0)
             {
                 data.Controlport = 8081;
             }
