@@ -41,13 +41,21 @@ namespace Webserver
                 Console.WriteLine(buffer);
                 string requestType = buffer.Substring(0, 3);
                 //handle GET
+                int typenumber = 3;
                 if (requestType != "GET")
                 {
-                    Console.WriteLine("This is no GET request");
-                    string errorMessage = "<H2>400 Error! This is no legit request</H2>";
-                    sendResponse.SendHeader("HTTP/1.1", errorMessage.Length, " 400 Bad Request", ref socket);
-                    sendResponse.SendToBrowser(errorMessage, ref socket);
-                    log(requestType, socket.RemoteEndPoint);
+                    if (requestType != "POS")
+                    {
+                        Console.WriteLine("This is no GET request");
+                        string errorMessage = "<H2>400 Error! This is no legit request</H2>";
+                        sendResponse.SendHeader("HTTP/1.1", errorMessage.Length, " 400 Bad Request", ref socket);
+                        sendResponse.SendToBrowser(errorMessage, ref socket);
+                        log(requestType, socket.RemoteEndPoint);
+                    }
+                    else
+                    {
+                        typenumber = 4;
+                    }
 
                 }
 
@@ -65,7 +73,7 @@ namespace Webserver
                 //directory browsing true
                 if (controlData.Directorybrowsing == true)
                 {
-                    string directory = request.Substring(request.IndexOf("/"), request.LastIndexOf("/") - 3);
+                    string directory = request.Substring(request.IndexOf("/"), request.LastIndexOf("/") - typenumber);
                     requestedFile = directory + requestedFile;
                 }
 
