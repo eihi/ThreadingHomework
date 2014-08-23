@@ -40,8 +40,7 @@ namespace Webserver
         }
         public SslStream createStream()
         {
-            string certificate = "Certificaat\\servercertificaat.pfx";
-            X509Certificate serverCertificate = new X509Certificate2(certificate, "ab12345");
+            X509Certificate serverCertificate = new X509Certificate2(CONST.SSL_CERTIFICATE, CONST.SSL_PASSWORD);
             var sslStream = new SslStream(client.GetStream(), false);
             sslStream.AuthenticateAsServer(serverCertificate, false, SslProtocols.Tls, true);
             return sslStream;
@@ -69,7 +68,7 @@ namespace Webserver
                     SslStream sslStream = createStream();
                     int rechten = AuthenticateUser("Stefanie@hotmail.com", "wachtwoord");
                     //send login form TODO: not showing in browser??
-                    sendResponse.SendSSLResponse(sslStream, "..\\Debug\\controlForm.html");
+                    sendResponse.SendSSLResponse(sslStream, CONST.CONTROLSERVER_CONTROLPANEL);
                    
                     //TODO: receive post and handle this
                     //TODO: xss save maken?
@@ -88,7 +87,7 @@ namespace Webserver
                     else if(rechten == CONST.SECURITY_BEHEERDER)
                     {
                         //beheerder rechten
-                        sendResponse.SendSSLResponse(sslStream, "..\\Debug\\controlForm.html");
+                        sendResponse.SendSSLResponse(sslStream, CONST.CONTROLFORM);
                         //TODO: set disabled on false
                         //TODO: fill html with controlData
                     }
@@ -103,7 +102,8 @@ namespace Webserver
 
         public int AuthenticateUser(string username, string password)
         {
-            SqlConnection connection = new SqlConnection("Server=http://databases.aii.avans.nl;" + "Database=sjpoel_db;" + "Uid=sjpoel;" + "Pwd=Ab12345;");
+            string connectionstring = "Server=" + CONST.DBCONN_SERVER + ";Database=" + CONST.DBCONN_DATABASE + ";Uid=" + CONST.DBCONN_USERID + ";Pwd=" + CONST.DBCONN_PASSWORD + ";";
+            SqlConnection connection = new SqlConnection(connectionstring);
             try
             {
                 connection.Open();
@@ -147,7 +147,7 @@ namespace Webserver
         public void writeXML()
         {
             XmlSerializer writer = new XmlSerializer(typeof(ControlData));
-            StreamWriter file = new StreamWriter(@"..\Debug\"+CONST.CONTROLDATA);
+            StreamWriter file = new StreamWriter(CONST.CONTROLSERVER_SETTINGS);
             if (file != null)
             {
                 writer.Serialize(file, data);
@@ -157,7 +157,7 @@ namespace Webserver
         public void readXML()
         {
             XmlSerializer reader = new XmlSerializer(typeof(ControlData));
-            StreamReader file = new StreamReader(@"..\Debug\"+CONST.CONTROLDATA);
+            StreamReader file = new StreamReader(CONST.CONTROLSERVER_SETTINGS);
             data = (ControlData)reader.Deserialize(file);
         }
 

@@ -20,6 +20,7 @@ namespace Webserver
         {
             this.controlData = controlData;
             sendResponse = new SendResponse();
+
             while (true)
             {
                 this.socket = listener.AcceptSocket();
@@ -70,7 +71,7 @@ namespace Webserver
 
 
                 //if requested file is nothing use default
-                if (requestedFile.Length == 0)
+                if (requestedFile.Length <= 2)
                 {
                     requestedFile = controlData.Webroot + "\\" + controlData.Defaultpage;
                 }
@@ -113,8 +114,6 @@ namespace Webserver
                     log(requestType, socket.RemoteEndPoint);
                 }
                 socket.Close();
-                return;
-
             }
         }
         public void log(string requestType, EndPoint ip)
