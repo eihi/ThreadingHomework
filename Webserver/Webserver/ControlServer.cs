@@ -67,9 +67,10 @@ namespace Webserver
                     Console.WriteLine("ControlServer: Accept connection from client: " + client.Client.RemoteEndPoint);
                     //TODO: authenticatie 
                     SslStream sslStream = createStream();
-
+                    int rechten = AuthenticateUser("Stefanie@hotmail.com", "wachtwoord");
                     //send login form TODO: not showing in browser??
                     sendResponse.SendSSLResponse(sslStream, "..\\Debug\\controlForm.html");
+                   
                     //TODO: receive post and handle this
                     //TODO: xss save maken?
                     //TODO: if port changes directly change this in servers
@@ -102,7 +103,7 @@ namespace Webserver
 
         public int AuthenticateUser(string username, string password)
         {
-            SqlConnection connection = new SqlConnection("Server=localhost;Database=webserver;Uid=root;Pwd='';");
+            SqlConnection connection = new SqlConnection("Server=http://databases.aii.avans.nl;" + "Database=sjpoel_db;" + "Uid=sjpoel;" + "Pwd=Ab12345;");
             try
             {
                 connection.Open();
