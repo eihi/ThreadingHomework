@@ -18,7 +18,6 @@ namespace Webserver
     public class ControlServer 
     {
         private ControlData data;
-        private TcpClient client;
         private SendResponse sendResponse;
         //private int port;
 
@@ -38,7 +37,7 @@ namespace Webserver
             controlThread.Start();
 
         }
-        public SslStream createStream()
+        public SslStream createStream(TcpClient client)
         {
             X509Certificate serverCertificate = new X509Certificate2(CONST.SSL_CERTIFICATE, CONST.SSL_PASSWORD);
             var sslStream = new SslStream(client.GetStream(), false);
@@ -60,15 +59,41 @@ namespace Webserver
 
             while(true)
             {
-                client = serverSocket.AcceptTcpClient();
-                if (client.Client.Connected)
+                Console.WriteLine("waiting for client to connect");
+                TcpClient client = serverSocket.AcceptTcpClient();
+                if (client.Connected)
                 {
+                    
                     Console.WriteLine("ControlServer: Accept connection from client: " + client.Client.RemoteEndPoint);
                     //TODO: authenticatie 
-                    SslStream sslStream = createStream();
+                    SslStream sslStream = createStream(client);
                     //int rechten = AuthenticateUser("Stefanie@hotmail.com", "wachtwoord");
                     //send login form TODO: not showing in browser??
-                    sendResponse.SendSSLResponse(sslStream, CONST.CONTROLSERVER_CONTROLPANEL);
+                    
+                   
+                    //sendResponse.SendSSLResponse(sslStream, CONST.CONTROLSERVER_CONTROLPANEL1);
+
+                    byte[] buffer = new byte[2048];
+                    StringBuilder messageData = new StringBuilder();
+                    int bytess = -1;
+                    do
+                    {
+                        bytess = sslStream.Read(buffer, 0, buffer.Length);
+
+                        // Use Decoder class to convert from bytes to UTF8 
+                        // in case a character spans two buffers.
+                        Decoder decoder = Encoding.UTF8.GetDecoder();
+                        char[] chars = new char[decoder.GetCharCount(buffer, 0, bytess)];
+                        decoder.GetChars(buffer, 0, bytess, chars, 0);
+                        messageData.Append(chars);
+                        // Check for EOF. 
+                        if (messageData.ToString().IndexOf("<EOF>") != -1)
+                        {
+                            break;
+                        }
+                    } while (bytess != 0);
+
+                    Console.WriteLine( messageData.ToString());
                    
                     //TODO: receive post and handle this
                     //TODO: xss save maken?
