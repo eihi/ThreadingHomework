@@ -71,7 +71,7 @@ namespace Webserver
 
 
                 //if requested file is nothing use default
-                if (requestedFile.Length <= 2)
+                if (requestedFile.Length <= 2 || requestedFile == "//favicon.ico")
                 {
                     requestedFile = controlData.Webroot + "\\" + controlData.Defaultpage;
                 }
@@ -111,7 +111,7 @@ namespace Webserver
 
                     sendResponse.SendHeader(HttpVersion, numberBytes, " 200 OK ", ref socket);
                     sendResponse.SendToBrowser(response, ref socket);
-                    log(requestType, socket.RemoteEndPoint);
+                    //log(requestType, socket.RemoteEndPoint);
                 }
                 socket.Close();
             }
