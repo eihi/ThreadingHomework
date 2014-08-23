@@ -54,31 +54,32 @@ namespace Webserver
             Console.WriteLine("Total Bytes : " + iTotBytes.ToString());
 
         }
-        public void SendToBrowser(String sData, ref Socket mySocket)
+        public void SendToBrowser(String message, ref Socket mySocket)
         {
-            SendToBrowser(Encoding.ASCII.GetBytes(sData), ref mySocket);
+            SendToBrowser(Encoding.ASCII.GetBytes(message), ref mySocket);
         }
-        public void SendToBrowser(Byte[] bSendData, ref Socket mySocket)
+        public void SendToBrowser(Byte[] bytemessage, ref Socket mySocket)
         {
             int numBytes = 0;
             try
             {
                 if (mySocket.Connected)
                 {
-                    if ((numBytes = mySocket.Send(bSendData,
-                          bSendData.Length, 0)) == -1)
-                        Console.WriteLine("Socket Error cannot Send Packet");
+                    if ((numBytes = mySocket.Send(bytemessage, bytemessage.Length, 0)) == -1)
+                        Console.WriteLine("Socket error cannot send packet");
                     else
                     {
-                        Console.WriteLine("No. of bytes send {0}", numBytes);
+                        Console.WriteLine("No. of bytes send " + numBytes);
                     }
                 }
                 else
-                    Console.WriteLine("Connection Dropped....");
+                {
+                    Console.WriteLine("Socket not connected anymore");
+                }
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error Occurred : {0} ", e);
+                Console.WriteLine("Error sending to browser: " + e);
             }
         }
     }

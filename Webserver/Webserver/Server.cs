@@ -19,15 +19,18 @@ namespace Webserver
         }
         public void startServer()
         {
-            TcpListener serverSocket = new TcpListener(controlData.Webport);
-            Console.WriteLine("WebServer Started - Listening on port:" + controlData.Webport);
-            serverSocket.Start();
-
-            while (true)
+            try
             {
-                Socket clientSocket = serverSocket.AcceptSocket();
-                RequestHandler handler = new RequestHandler(clientSocket, controlData);
-                
+                TcpListener listener = new TcpListener(controlData.Webport);
+                listener.Start();
+                Console.WriteLine("WebServer Started - Listening on port:" + controlData.Webport);
+
+                RequestHandler handler = new RequestHandler(listener, controlData);
+
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Exception occured on webserver");
             }
         }
     }

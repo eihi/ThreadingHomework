@@ -69,7 +69,7 @@ namespace Webserver
                     SslStream sslStream = createStream();
 
                     //send login form TODO: not showing in browser??
-                    sendResponse.SendSSLResponse(sslStream, "..\\Debug\\loginForm.html");
+                    sendResponse.SendSSLResponse(sslStream, "..\\Debug\\controlForm.html");
                     //TODO: receive post and handle this
                     //TODO: xss save maken?
                     //TODO: if port changes directly change this in servers

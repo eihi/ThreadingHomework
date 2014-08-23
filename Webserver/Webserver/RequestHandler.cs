@@ -16,29 +16,38 @@ namespace Webserver
         private ControlData controlData;
         private SendResponse sendResponse;
 
-        public RequestHandler(Socket sock, ControlData controlData)
+        public RequestHandler(TcpListener listener, ControlData controlData)
         {
-            this.socket = sock;
             this.controlData = controlData;
             sendResponse = new SendResponse();
-            start();
+            while (true)
+            {
+                this.socket = listener.AcceptSocket();
+                start();
+            }
         }
         public void start()
         {
-            if(socket.Connected)
-            {
-                Console.WriteLine("WebServer: Accept connection from client: " + socket.RemoteEndPoint);
-                //receive data from client and put in byte array
+                if (socket.Connected)
+                {
+                    Console.WriteLine("WebServer: Accept connection from client: " + socket.RemoteEndPoint);
+                    //receive data from client and put in byte array
                     Byte[] receivedBytes = new Byte[1024];
                     int i = socket.Receive(receivedBytes, receivedBytes.Length, 0);
+
+                    //byte to string
                     string buffer = Encoding.ASCII.GetString(receivedBytes);
-                    string requestType = buffer.Substring(0,3);
+                    Console.WriteLine(buffer);
+                    string requestType = buffer.Substring(0, 3);
                     //handle GET
-                    if(requestType != "GET")
+                    if (requestType != "GET")
                     {
                         Console.WriteLine("This is no GET request");
-                        socket.Close();
-                        return;
+                        string errorMessage = "<H2>400 Error! This is no legit request</H2>";
+                        sendResponse.SendHeader("HTTP/1.1", errorMessage.Length, " 400 Bad Request", ref socket);
+                        sendResponse.SendToBrowser(errorMessage, ref socket);
+                        log(requestType, socket.RemoteEndPoint);
+
                     }
 
                     //get http request
@@ -47,33 +56,42 @@ namespace Webserver
                     string request = buffer.Substring(0, index - 1);
                     request.Replace("\\", "/");
 
+                    
                     //extract requested file name
                     index = request.LastIndexOf("/") + 1;
-                    string requestedFile = request.Substring(index);
-                    
+                    string requestedFile = "/" +  request.Substring(index);
+
+                    //directory browsing true
+                    if (controlData.Directorybrowsing == true)
+                    {
+                        string directory = request.Substring(request.IndexOf("/"), request.LastIndexOf("/") - 3);
+                        requestedFile = directory + requestedFile;
+                    }
+
+
                     //if requested file is nothing use default
-                    if(requestedFile.Length == 0)
+                    if (requestedFile.Length == 0)
                     {
                         requestedFile = controlData.Webroot + "\\" + controlData.Defaultpage;
                     }
                     else
                     {
                         //set full path
-                        requestedFile = controlData.Webroot + "\\" + requestedFile;
+                        requestedFile = controlData.Webroot + requestedFile;
+                        Console.WriteLine("requested file: " + requestedFile);
                     }
 
-                    //TODO: if directory browsing == true : search for file in specified directory (internet tut for code)
-                    //check if html file exists
-                    if(File.Exists(requestedFile) == false)
+
+                    if (File.Exists(requestedFile) == false)
                     {
-                        string errorMessage = "<H2>404 Error! Page does not exists..</H2>";
-                        sendResponse.SendHeader(HttpVersion, errorMessage.Length, " 404 Not Found", ref socket);
+                        string errorMessage = "<H2>404 Error! Page does not exists </H2>";
+                        sendResponse.SendHeader(HttpVersion, errorMessage.Length, "404 Not Found", ref socket);
                         sendResponse.SendToBrowser(errorMessage, ref socket);
                         log(requestType, socket.RemoteEndPoint);
                     }
-                    else 
+                    else
                     {
-                        int aantalBytes = 0;
+                        int numberBytes = 0;
                         string response = "";
                         //TODO: show images correctly
 
@@ -82,19 +100,20 @@ namespace Webserver
                         BinaryReader reader = new BinaryReader(filestream);
                         Byte[] sendBytes = new Byte[filestream.Length];
                         int n;
-                        while((n = reader.Read(sendBytes,0,sendBytes.Length)) != 0)
+                        while ((n = reader.Read(sendBytes, 0, sendBytes.Length)) != 0)
                         {
-                            response += Encoding.ASCII.GetString(sendBytes,0, n);
-                            aantalBytes += n;
+                            response += Encoding.ASCII.GetString(sendBytes, 0, n);
+                            numberBytes += n;
                         }
                         reader.Close();
                         filestream.Close();
 
-                        sendResponse.SendHeader(HttpVersion, aantalBytes, " 200 OK ", ref socket);
+                        sendResponse.SendHeader(HttpVersion, numberBytes, " 200 OK ", ref socket);
                         sendResponse.SendToBrowser(sendBytes, ref socket);
                         log(requestType, socket.RemoteEndPoint);
                     }
-                    socket.Close();
+                    //socket.Close();
+                
             }
         }
         public void log(string requestType, EndPoint ip)
