@@ -66,7 +66,7 @@ namespace Webserver
                     Console.WriteLine("ControlServer: Accept connection from client: " + client.Client.RemoteEndPoint);
                     //TODO: authenticatie 
                     SslStream sslStream = createStream();
-                    int rechten = AuthenticateUser("Stefanie@hotmail.com", "wachtwoord");
+                    //int rechten = AuthenticateUser("Stefanie@hotmail.com", "wachtwoord");
                     //send login form TODO: not showing in browser??
                     sendResponse.SendSSLResponse(sslStream, CONST.CONTROLSERVER_CONTROLPANEL);
                    
