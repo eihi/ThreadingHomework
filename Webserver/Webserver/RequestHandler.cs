@@ -15,20 +15,24 @@ namespace Webserver
         private Socket socket;
         private ControlSettings controlData;
         private SendResponse sendResponse;
+        public static Semaphore limit { get; set; }
 
         public RequestHandler(TcpListener listener, ControlSettings controlData)
         {
             this.controlData = controlData;
             sendResponse = new SendResponse();
+            limit = new Semaphore(1, 20);
 
             while (true)
             {
                 this.socket = listener.AcceptSocket();
-                start();
+                Thread request = new Thread(start);
+                request.Start();
             }
         }
         public void start()
         {
+            limit.WaitOne();
             if (socket.Connected)
             {
                 // Receive data from client and put in byte array
@@ -121,6 +125,7 @@ namespace Webserver
                 }
                 socket.Close();
             }
+            limit.Release();
         }
 
         private byte[] ReceiveClientData()
