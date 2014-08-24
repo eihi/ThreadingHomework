@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ControlData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<ControlSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Webport>8080</Webport>
   <Controlport>8081</Controlport>
   <Webroot>c:\webroot</Webroot>
   <Defaultpage>index.html</Defaultpage>
   <Directorybrowsing>true</Directorybrowsing>
-</ControlData>
+</ControlSettings>

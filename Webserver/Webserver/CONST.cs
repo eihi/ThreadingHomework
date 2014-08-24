@@ -23,7 +23,7 @@ namespace Webserver
 
         // SSL config
         public const string SSL_ROOT                    = "..\\..\\Certificaat\\";
-        public const string SSL_CERTIFICATE             = SSL_ROOT + "servercertificate.pfx";
+        public const string SSL_CERTIFICATE             = SSL_ROOT + "servercertificaat.pfx";
         public const string SSL_PASSWORD                = "ab12345";
 
         // Databaseconnection config
@@ -31,5 +31,9 @@ namespace Webserver
         public const string DBCONN_DATABASE             = "sjpoel_db";
         public const string DBCONN_USERID               = "sjpoel";
         public const string DBCONN_PASSWORD             = "Ab12345";
+
+        // Test account
+        public const string TEST_ACCOUNT                = "stefanie";
+        public const string TEST_PASSWORD               = "wachtwoord";
     }
 }

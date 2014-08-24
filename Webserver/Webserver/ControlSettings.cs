@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Webserver
 {
-    public class ControlData
+    public class ControlSettings
     {
         private int webport;
         public int Webport

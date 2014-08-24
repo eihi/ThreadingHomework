@@ -10,15 +10,12 @@ namespace Webserver
 {
     class Program
     {
-        private ControlServer controlserver;
         static void Main(string[] args)
         {
-
-            Logger logger = new Logger();
             ControlServer controlserver = null;
             try
             {
-               controlserver = new ControlServer();
+                controlserver = new ControlServer(); 
             }
             catch (Exception e)
             {
@@ -28,7 +25,7 @@ namespace Webserver
             {
                 if (controlserver != null)
                 {
-                    Server server = new Server(controlserver.Data);
+                    WebServer server = new WebServer(controlserver.Settings);
                 }
             }
             catch (Exception e)

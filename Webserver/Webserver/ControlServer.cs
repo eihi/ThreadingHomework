@@ -17,20 +17,20 @@ namespace Webserver
 {
     public class ControlServer 
     {
-        private ControlData data;
+        private ControlSettings settings;
         private SendResponse sendResponse;
         //private int port;
 
 
-        public ControlData Data
+        public ControlSettings Settings
         {
-            get { return data; }
-            set { data = value; }
+            get { return settings; }
+            set { settings = value; }
         }
         public ControlServer()
         {
             //thread starten en startserver aanroepen
-            data = new ControlData();
+            settings = new ControlSettings();
             sendResponse = new SendResponse();
             readXML();
             Thread controlThread = new Thread(startServer);
@@ -39,20 +39,28 @@ namespace Webserver
         }
         public SslStream createStream(TcpClient client)
         {
-            X509Certificate serverCertificate = new X509Certificate2(CONST.SSL_CERTIFICATE, CONST.SSL_PASSWORD);
-            var sslStream = new SslStream(client.GetStream(), false);
-            sslStream.AuthenticateAsServer(serverCertificate, false, SslProtocols.Tls, true);
-            return sslStream;
+            try
+            {
+                X509Certificate serverCertificate = new X509Certificate2(CONST.SSL_CERTIFICATE, CONST.SSL_PASSWORD);
+                var sslStream = new SslStream(client.GetStream(), false);
+                sslStream.AuthenticateAsServer(serverCertificate, false, SslProtocols.Tls, true);
+                return sslStream;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("SSLStream creation failed:" + e.ToString());
+                return null;
+            }
         }
         public void startServer()
         {
-            if (data.Controlport.ToString().Length == 0)
+            if (settings.Controlport.ToString().Length == 0)
             {
-                data.Controlport = 8081;
+                settings.Controlport = 8081;
             }
-            TcpListener serverSocket = new TcpListener(data.Controlport);
+            TcpListener serverSocket = new TcpListener(settings.Controlport);
             serverSocket.Start();
-            Console.WriteLine("ControlServer Started - Listening on port:" + data.Controlport);
+            Console.WriteLine("ControlServer Started - Listening on port:" + settings.Controlport);
 
             Byte[] bytes = new Byte[256];
             string streamData = null;
@@ -97,37 +105,56 @@ namespace Webserver
                    
                     //TODO: receive post and handle this
                     //TODO: xss save maken?
-                    //TODO: if port changes directly change this in servers
+                    //TODO: if port changes directly change this in servers, reload config whenever xml file is edited
 
-                    /*
-                    string username = "";
-                    string password = "";
-                    /*int rechten = AuthenticateUser(username, password);
+                    // Build response based on authenticationlevel
+                    string username = CONST.TEST_ACCOUNT;
+                    string password = CONST.TEST_PASSWORD;
+                    int authenticationlevel = AuthenticateUser(username, password);
 
-                    //TODO: toon pagina aan de hand van rechten
-                    if(rechten == 0)
+                    if (authenticationlevel == CONST.SECURITY_BEHEERDER || authenticationlevel == CONST.SECURITY_ONDERSTEUNER)
                     {
-                        //geen rechten tot de pagina
+                        sendResponse.SendSSLResponse(sslStream, ControlPanelBuilder(authenticationlevel));
                     }
-                    else if(rechten == CONST.SECURITY_BEHEERDER)
+                    else
                     {
-                        //beheerder rechten
-                        sendResponse.SendSSLResponse(sslStream, CONST.CONTROLFORM);
-                        //TODO: set disabled on false
-                        //TODO: fill html with controlData
+                        //TODO: redirect to loginform
                     }
-                    else if(rechten == CONST.SECURITY_ONDERSTEUN)
-                    {
-                        sendResponse.SendSSLResponse(sslStream, "..\\Debug\\controlForm.html");
-                        //TODO: fill html with controlData
-                    }*/
                 }
             }
         }
 
+        private string ControlPanelBuilder(int authenticationlevel)
+        {
+            string disabledValue = authenticationlevel != CONST.SECURITY_BEHEERDER ? "disabled" : "";
+            string checkedValue = settings.Directorybrowsing ? "checked" : "";
+            string html = "";
+            html += "<!doctype html>\n<html lang=\"en\">\n<head>\n<style>\ntable {\n";
+			html += "border:1px solid #000;\npadding:5px;\n}\ntd {\npadding:5px;\n";
+            html += "}\n</style>\n</head>\n<body>\n<div>\n<form method=\"POST\">\n";
+            html += "<table>\n<tr>\n<td><h1>SuperServer</h1></td>\n<td><h1>Control Panel</h1></td>\n</tr>\n";
+            html += "<tr>\n<td>Web port: </td>\n";
+            html += "<td><input type=\"text\" name=\"webport\" value=\""+settings.Webport+"\" "+disabledValue+"></td>\n";
+            html += "</tr>\n<tr>\n<td>Control port: </td>\n";
+            html += "<td><input type=\"text\" name=\"controlport value=\"" + settings.Controlport + "\" " + disabledValue + "></td>\n";
+            html += "</tr>\n<tr>\n<td>Webroot: </td>\n";
+            html += "<td><input type=\"text\" name=\"webroot value=\"" + settings.Webroot + "\" " + disabledValue + "></td>\n";
+            html += "</tr>\n<tr>\n<td>Default page: </td>\n";
+            html += "<td><input type=\"text\" name=\"defaultpage value=\"" + settings.Defaultpage + "\" " + disabledValue + "></td>\n";
+            html += "</tr>\n<tr>\n<td>Directory browsing: </td>\n";
+            html += "<td><input type=\"checkbox\" name=\"dirbrow\""+checkedValue+"></td>\n";
+            html += "</tr>\n<tr>\n<td><input type=\"button\" value=\"Show Log\"></td>\n";
+            html += "<td><input type=\"submit\" value=\"OK\"></td>\n</tr>\n";
+            html += "</table>\n</form>\n</div>\n</body>\n</html>\n";
+            return html;
+        }
+
         public int AuthenticateUser(string username, string password)
         {
-            string connectionstring = "Server=" + CONST.DBCONN_SERVER + ";Database=" + CONST.DBCONN_DATABASE + ";Uid=" + CONST.DBCONN_USERID + ";Pwd=" + CONST.DBCONN_PASSWORD + ";";
+            string connectionstring = "Server=" + CONST.DBCONN_SERVER
+                                   + ";Database=" + CONST.DBCONN_DATABASE
+                                   + ";Uid=" + CONST.DBCONN_USERID
+                                   + ";Pwd=" + CONST.DBCONN_PASSWORD + ";";
             SqlConnection connection = new SqlConnection(connectionstring);
             try
             {
@@ -171,19 +198,19 @@ namespace Webserver
         
         public void writeXML()
         {
-            XmlSerializer writer = new XmlSerializer(typeof(ControlData));
+            XmlSerializer writer = new XmlSerializer(typeof(ControlSettings));
             StreamWriter file = new StreamWriter(CONST.CONTROLSERVER_SETTINGS);
             if (file != null)
             {
-                writer.Serialize(file, data);
+                writer.Serialize(file, settings);
             }
             file.Close();
         }
         public void readXML()
         {
-            XmlSerializer reader = new XmlSerializer(typeof(ControlData));
+            XmlSerializer reader = new XmlSerializer(typeof(ControlSettings));
             StreamReader file = new StreamReader(CONST.CONTROLSERVER_SETTINGS);
-            data = (ControlData)reader.Deserialize(file);
+            settings = (ControlSettings)reader.Deserialize(file);
         }
 
     }

@@ -13,10 +13,10 @@ namespace Webserver
     public class RequestHandler 
     {
         private Socket socket;
-        private ControlData controlData;
+        private ControlSettings controlData;
         private SendResponse sendResponse;
 
-        public RequestHandler(TcpListener listener, ControlData controlData)
+        public RequestHandler(TcpListener listener, ControlSettings controlData)
         {
             this.controlData = controlData;
             sendResponse = new SendResponse();
@@ -42,21 +42,21 @@ namespace Webserver
                 string requestType = buffer.Substring(0, 3);
                 //handle GET
                 int typenumber = 3;
-                if (requestType != "GET")
+                switch (requestType)
                 {
-                    if (requestType != "POS")
-                    {
-                        Console.WriteLine("This is no GET request");
+                    case "GET":
+                        typenumber = 3;
+                        break;
+                    case "POST":
+                        typenumber = 4;
+                        break;
+                    default:
+                        Console.WriteLine("Request Type \""+ requestType + "\" is not allowed");
                         string errorMessage = "<H2>400 Error! This is no legit request</H2>";
                         sendResponse.SendHeader("HTTP/1.1", errorMessage.Length, " 400 Bad Request", ref socket);
                         sendResponse.SendToBrowser(errorMessage, ref socket);
                         log(requestType, socket.RemoteEndPoint);
-                    }
-                    else
-                    {
-                        typenumber = 4;
-                    }
-
+                        break;
                 }
 
                 //get http request

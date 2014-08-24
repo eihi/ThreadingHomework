@@ -51,14 +51,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CONST.cs" />
-    <Compile Include="ControlData.cs" />
+    <Compile Include="ControlSettings.cs" />
     <Compile Include="ControlServer.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestHandler.cs" />
     <Compile Include="SendResponse.cs" />
-    <Compile Include="Server.cs" />
+    <Compile Include="WebServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

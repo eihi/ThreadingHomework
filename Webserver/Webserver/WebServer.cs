@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Webserver
 {
-    public class Server
+    public class WebServer
     {
-        ControlData controlData;
-        public Server(ControlData controlData)
+        ControlSettings controlData;
+        public WebServer(ControlSettings controlData)
         {
             this.controlData = controlData;
             Thread webThread = new Thread(startServer);
