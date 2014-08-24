@@ -175,7 +175,7 @@ namespace Webserver
             string disabledValue = authenticationlevel != CONST.SECURITY_BEHEERDER ? "disabled" : "";
             string checkedValue = settings.Directorybrowsing ? "checked" : "";
             string html = "";
-            html += "<!doctype html>\n<html lang=\"en\">\n<head>\n<style>\ntable {\n";
+            html += "<!doctype html>\n<html lang=\"en\">\n<head>\n<style>div.log {padding:10px;}\ntable {\n";
             html += "border:1px solid #000;\npadding:5px;\n}\ntd {\npadding:5px;\n";
             html += "}\n</style>\n</head>\n<body>\n<div>\n<form method=\"POST\">\n";
             html += "<table>\n<tr>\n<td><h1>SuperServer</h1></td>\n<td><h1>Control Panel</h1></td>\n</tr>\n";
@@ -196,29 +196,12 @@ namespace Webserver
             {
                 log += value + "<br>";
             }
-            html += "</table>\n</form>\n</div>\n<div>"+ log +"</div>\n</body>\n</html>\n";
+            html += "</table>\n</form>\n</div>\n<div class=\"log\">"+ log +"</div>\n</body>\n</html>\n";
             return html;
         }
 
         private List<string> LogFile()
         {
-            //int numberBytes = 0;
-            //string response = "";
-            ////TODO: show images correctly
-
-            //FileStream filestream = new FileStream(CONST.CONTROLSERVER_LOGFILE, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-            //BinaryReader reader = new BinaryReader(filestream);
-            //Byte[] sendBytes = new Byte[filestream.Length];
-            //int n;
-            //while ((n = reader.Read(sendBytes, 0, sendBytes.Length)) != 0)
-            //{
-            //    response += Encoding.ASCII.GetString(sendBytes, 0, n);
-            //    numberBytes += n;
-            //}
-            //reader.Close();
-            //filestream.Close();
-            //return response;
             string line;
             List<string> logFile = new List<string>();
             // Read the file and display it line by line.
