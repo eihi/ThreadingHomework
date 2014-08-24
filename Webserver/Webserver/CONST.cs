@@ -13,9 +13,6 @@ namespace Webserver
         // Controlserver config
         public const string CONTROLSERVER_ROOT          = "..\\..\\Controlserver\\";
         public const string CONTROLSERVER_SETTINGS      = CONTROLSERVER_ROOT + "controlserver.xml";
-        public const string CONTROLSERVER_CONTROLPANEL1  = CONTROLSERVER_ROOT + "controlForm1.html";
-        public const string CONTROLSERVER_CONTROLPANEL2 = CONTROLSERVER_ROOT + "controlForm2.html";
-        public const string CONTROLSERVER_LOGINFORM     = CONTROLSERVER_ROOT + "loginForm.html";
 
         // Security levels
         public const int SECURITY_BEHEERDER             = 1;

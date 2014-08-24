@@ -31,10 +31,8 @@ namespace Webserver
         {
             if (socket.Connected)
             {
-                Console.WriteLine("WebServer: Accept connection from client: " + socket.RemoteEndPoint);
-                //receive data from client and put in byte array
-                Byte[] receivedBytes = new Byte[1024];
-                int i = socket.Receive(receivedBytes, receivedBytes.Length, 0);
+                // Receive data from client and put in byte array
+                Byte[] receivedBytes = ReceiveClientData();
 
                 //byte to string
                 string buffer = Encoding.ASCII.GetString(receivedBytes);
@@ -51,7 +49,7 @@ namespace Webserver
                         typenumber = 4;
                         break;
                     default:
-                        Console.WriteLine("Request Type \""+ requestType + "\" is not allowed");
+                        Console.WriteLine("Request Type: '"+ requestType + "' not allowed");
                         string errorMessage = "<H2>400 Error! This is no legit request</H2>";
                         sendResponse.SendHeader("HTTP/1.1", errorMessage.Length, " 400 Bad Request", ref socket);
                         sendResponse.SendToBrowser(errorMessage, ref socket);
@@ -123,6 +121,14 @@ namespace Webserver
                 }
                 socket.Close();
             }
+        }
+
+        private byte[] ReceiveClientData()
+        {
+            Console.WriteLine("WebServer: Accept connection from client: " + socket.RemoteEndPoint);
+            Byte[] receivedBytes = new Byte[1024];
+            int i = socket.Receive(receivedBytes, receivedBytes.Length, 0);
+            return receivedBytes;
         }
         public void log(string requestType, EndPoint ip)
         {

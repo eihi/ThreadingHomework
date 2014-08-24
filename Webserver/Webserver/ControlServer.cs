@@ -20,8 +20,6 @@ namespace Webserver
     {
         private ControlSettings settings;
         private SendResponse sendResponse;
-        //private int port;
-
 
         public ControlSettings Settings
         {
@@ -112,15 +110,15 @@ namespace Webserver
                     string username = CONST.TEST_ACCOUNT;
                     string password = CONST.TEST_PASSWORD;
                     //int authenticationlevel = AuthenticateUser(username, password);
-                    int authenticationlevel = 0;
+                    int authenticationlevel = 2;
                     if (authenticationlevel == CONST.SECURITY_BEHEERDER || authenticationlevel == CONST.SECURITY_ONDERSTEUNER)
                     {
-                        // Serve ControlPanel
+                        // Serve ControlPanel over SSL
                         sendResponse.SendSSLResponse(sslStream, ControlPanelBuilder(authenticationlevel));
                     }
                     else
                     {
-                        // Serve LoginForm
+                        // Serve LoginForm over SSL
                         sendResponse.SendSSLResponse(sslStream, LoginFormBuilder());
                     }
                 }
@@ -145,9 +143,9 @@ namespace Webserver
             html += "</tr>\n<tr>\n<td>Default page: </td>\n";
             html += "<td><input type=\"text\" name=\"defaultpage\" value=\"" + settings.Defaultpage + "\" " + disabledValue + "></td>\n";
             html += "</tr>\n<tr>\n<td>Directory browsing: </td>\n";
-            html += "<td><input type=\"checkbox\" name=\"dirbrow\""+checkedValue+"></td>\n";
+            html += "<td><input type=\"checkbox\" name=\"dirbrow\""+checkedValue+" "+disabledValue+"></td>\n";
             html += "</tr>\n<tr>\n<td><input type=\"button\" value=\"Show Log\"></td>\n";
-            html += "<td><input type=\"submit\" value=\"OK\"></td>\n</tr>\n";
+            html += "<td><input type=\"submit\" value=\"OK\""+disabledValue+"></td>\n</tr>\n";
             html += "</table>\n</form>\n</div>\n</body>\n</html>\n";
             return html;
         }
@@ -183,7 +181,8 @@ namespace Webserver
             }
             if (connection.State.ToString() == "Open")
             {
-                //TODO: sql injection 
+                Console.WriteLine("Database connection state: " + connection.State.ToString());
+                // Check if username and password are valid
                 if (UsernameIsValid(username) && PasswordIsValid(password))
                 {
                     string getSaltQuery = "SELECT salt FROM users WHERE username =" + username;
