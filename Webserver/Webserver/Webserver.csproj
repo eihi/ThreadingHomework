@@ -62,7 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Certificaat\servercertificate.pfx" />
+    <None Include="Certificaat\servercertificaat.pfx" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

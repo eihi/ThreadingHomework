@@ -82,7 +82,7 @@ namespace Webserver
                    
                     //sendResponse.SendSSLResponse(sslStream, CONST.CONTROLSERVER_CONTROLPANEL1);
 
-                    byte[] buffer = new byte[2048];
+                    /*byte[] buffer = new byte[2048];
                     StringBuilder messageData = new StringBuilder();
                     int bytess = -1;
                     do
@@ -102,8 +102,8 @@ namespace Webserver
                         }
                     } while (bytess != 0);
 
-                    Console.WriteLine( messageData.ToString());
-                   
+                    Console.WriteLine( messageData.ToString());*/
+                    
                     //TODO: receive post and handle this
                     //TODO: xss save maken?
                     //TODO: if port changes directly change this in servers, reload config whenever xml file is edited
@@ -112,7 +112,7 @@ namespace Webserver
                     string username = CONST.TEST_ACCOUNT;
                     string password = CONST.TEST_PASSWORD;
                     int authenticationlevel = AuthenticateUser(username, password);
-
+                    authenticationlevel = 1;
                     if (authenticationlevel == CONST.SECURITY_BEHEERDER || authenticationlevel == CONST.SECURITY_ONDERSTEUNER)
                     {
                         sendResponse.SendSSLResponse(sslStream, ControlPanelBuilder(authenticationlevel));
@@ -165,30 +165,33 @@ namespace Webserver
             {
                 Console.WriteLine("Database connection failed:" + e.ToString());
             }
-            //TODO: sql injection 
-            if (UsernameIsValid(username) && PasswordIsValid(password))
+            if (connection.State.ToString() == "Open")
             {
-                string getSaltQuery = "SELECT salt FROM users WHERE username =" + username;
+                //TODO: sql injection 
+                if (UsernameIsValid(username) && PasswordIsValid(password))
+                {
+                    string getSaltQuery = "SELECT salt FROM users WHERE username =" + username;
 
-                SqlDataReader reader = null;
-                SqlCommand saltCommand = new SqlCommand(getSaltQuery, connection);
-                reader = saltCommand.ExecuteReader();
-                string salt = null;
-                while (reader.Read())
-                {
-                    salt = reader["salt"].ToString();
-                    Console.WriteLine(salt);
-                }
-                //TODO: encrypt password with salt
-                //TODO: personal cookie to identify user in browser
-                string getUserQuery = "SELECT security_level FROM users WHERE username =" + username + "and password =" + password;
-                SqlCommand userCommand = new SqlCommand(getSaltQuery, connection);
-                reader = userCommand.ExecuteReader();
-                if (reader.HasRows)
-                {
+                    SqlDataReader reader = null;
+                    SqlCommand saltCommand = new SqlCommand(getSaltQuery, connection);
+                    reader = saltCommand.ExecuteReader();
+                    string salt = null;
                     while (reader.Read())
                     {
-                        return int.Parse(reader["security_level"].ToString());
+                        salt = reader["salt"].ToString();
+                        Console.WriteLine(salt);
+                    }
+                    //TODO: encrypt password with salt
+                    //TODO: personal cookie to identify user in browser
+                    string getUserQuery = "SELECT security_level FROM users WHERE username =" + username + "and password =" + password;
+                    SqlCommand userCommand = new SqlCommand(getSaltQuery, connection);
+                    reader = userCommand.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            return int.Parse(reader["security_level"].ToString());
+                        }
                     }
                 }
             }
