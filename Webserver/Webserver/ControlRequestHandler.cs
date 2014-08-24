@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 //using MySql.Data.MySqlClient;
 using System.Linq;
 using System.Net.Security;
@@ -32,27 +33,28 @@ namespace Webserver
 
         private void start()
         {
-            Console.WriteLine("Waiting for client to connect...");
+            Console.WriteLine("\nWaiting for client to connect...");
             if (client.Connected)
             {
                 Console.WriteLine("ControlServer: Accept connection from client: " + client.Client.RemoteEndPoint);
                 SslStream sslStream = createStream(client);
 
                 // Receive data from client
-                Byte[] receivedBytes = ReceiveClientData();
+                string request = ByteArrayToString(ReceiveClientData());
+                
 
                 // Determine request type
-                string requestType = DetermineRequestType(receivedBytes);
+                string requestType = DetermineRequestType(request);
                 switch (requestType)
                 {
                     case "GET":
-                        // Handle GET request
+                        Console.WriteLine("RequestType: " + requestType + "\n" + request);
                         break;
                     case "POST":
-                        handlePOST();
+                        handlePOST(request);
                         break;
                     default:
-                        Console.WriteLine("RequestType: is not valid");
+                        Console.WriteLine("RequestType: " + requestType);
                         break;
                 }
 
@@ -61,6 +63,8 @@ namespace Webserver
                 string password = CONST.TEST_PASSWORD;
                 int authenticationlevel = AuthenticateUser(username, password);
                 authenticationlevel = 1; //TODO: remove when done with testing
+                username = "";
+                password = "";
 
                 // Create response
                 string response = "";
@@ -85,10 +89,10 @@ namespace Webserver
             }
         }
 
-        private void handlePOST()
+        private void handlePOST(string request)
         {
             //TODO: handle POST
-
+            Console.WriteLine("POST: " + request);
             // Save settings
             //settings.Save();
         }
@@ -182,8 +186,45 @@ namespace Webserver
             html += "<td><input type=\"checkbox\" name=\"dirbrow\"" + checkedValue + " " + disabledValue + "></td>\n";
             html += "</tr>\n<tr>\n<td><input type=\"button\" value=\"Show Log\"></td>\n";
             html += "<td><input type=\"submit\" value=\"OK\"" + disabledValue + "></td>\n</tr>\n";
-            html += "</table>\n</form>\n</div>\n</body>\n</html>\n";
+            string log = "";
+            foreach (string value in LogFile())
+            {
+                log += value + "<br>";
+            }
+            html += "</table>\n</form>\n</div>\n<div>"+ log +"</div>\n</body>\n</html>\n";
             return html;
+        }
+
+        private List<string> LogFile()
+        {
+            //int numberBytes = 0;
+            //string response = "";
+            ////TODO: show images correctly
+
+            //FileStream filestream = new FileStream(CONST.CONTROLSERVER_LOGFILE, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+            //BinaryReader reader = new BinaryReader(filestream);
+            //Byte[] sendBytes = new Byte[filestream.Length];
+            //int n;
+            //while ((n = reader.Read(sendBytes, 0, sendBytes.Length)) != 0)
+            //{
+            //    response += Encoding.ASCII.GetString(sendBytes, 0, n);
+            //    numberBytes += n;
+            //}
+            //reader.Close();
+            //filestream.Close();
+            //return response;
+            string line;
+            List<string> logFile = new List<string>();
+            // Read the file and display it line by line.
+            System.IO.StreamReader file = new StreamReader(CONST.CONTROLSERVER_LOGFILE);
+            while ((line = file.ReadLine()) != null)
+            {
+                logFile.Add(line);
+            }
+
+            file.Close();
+            return logFile;
         }
 
         private string LoginFormBuilder()
@@ -202,18 +243,21 @@ namespace Webserver
 
         private byte[] ReceiveClientData()
         {
-            Console.WriteLine("ControlServer: Accept connection from client: " + client.Client.RemoteEndPoint);
             Byte[] receivedBytes = new Byte[1024];
             int i = client.Client.Receive(receivedBytes, receivedBytes.Length, 0);
             return receivedBytes;
         }
 
-        private string DetermineRequestType(byte[] receivedData)
+        private string ByteArrayToString(byte[] bytes)
         {
-            string requestType = "";
-            string request = Encoding.ASCII.GetString(receivedData);
-            Console.WriteLine("Incoming request: " + request);
-            return requestType = request.Split(' ')[0];
+            return Encoding.ASCII.GetString(bytes);
+        }
+
+        private string DetermineRequestType(string request)
+        {
+            string requestType = request.Split(' ')[0];
+            requestType = Regex.IsMatch(requestType, @"^[A-Z]{3,7}$") ? requestType : "INVALID_REQUESTTYPE";
+            return requestType;
         }
         public SslStream createStream(TcpClient client)
         {

@@ -251,3 +251,54 @@ URL: c:\webroot\index.html
 Ip adres: 127.0.0.1:64290
 Datetime: 24-8-2014 21:31:08
 
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:2745
+Datetime: 24-8-2014 23:32:54
+
+RequestType: GET
+URL: c:\webroot//Lighthouse.png
+Ip adres: 127.0.0.1:2747
+Datetime: 24-8-2014 23:32:55
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:2749
+Datetime: 24-8-2014 23:32:55
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:4868
+Datetime: 25-8-2014 00:57:25
+
+
+RequestType: GET
+URL: c:\webroot//Lighthouse.png
+Ip adres: 127.0.0.1:4869
+Datetime: 25-8-2014 00:57:25
+
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:4874
+Datetime: 25-8-2014 00:57:25
+
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:4877
+Datetime: 25-8-2014 00:57:27
+
+
+RequestType: GET
+URL: c:\webroot//Lighthouse.png
+Ip adres: 127.0.0.1:4883
+Datetime: 25-8-2014 00:57:28
+
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:4885
+Datetime: 25-8-2014 00:57:28
+
+

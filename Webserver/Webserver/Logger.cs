@@ -42,7 +42,7 @@ namespace Webserver
             {
                 using (StreamWriter writer = File.AppendText(CONST.CONTROLSERVER_LOGFILE))
                 {
-                    writer.WriteLine(logFile[positie--]);
+                    writer.WriteLine(logFile[positie--]+ "\n");
                     Console.WriteLine("write to file");
                 }
             }

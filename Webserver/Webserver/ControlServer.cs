@@ -17,29 +17,31 @@ namespace Webserver
 {
     public class ControlServer 
     {
-        private ControlSettings settings;
-        private SendResponse sendResponse;
-
         public ControlSettings Settings
         {
             get { return settings; }
             set { settings = value; }
         }
+        private ControlSettings settings;
+
         public ControlServer()
         {
-            //thread starten en startserver aanroepen
+            // Load settings
             settings = new ControlSettings().Load();
-            sendResponse = new SendResponse();
+
+            // Start server on a new thread
             Thread controlThread = new Thread(startServer);
             controlThread.Start();
 
         }
         public void startServer() 
         {
+            // Start listening
             TcpListener listener = new TcpListener(settings.Controlport);
             listener.Start();
             Console.WriteLine("ControlServer Started - Listening on port:" + settings.Controlport);
 
+            // Handle incoming requests
             ControlRequestHandler handler = new ControlRequestHandler(listener, settings);
         }
     }
