@@ -15,6 +15,11 @@ namespace Webserver
         public const string CONTROLSERVER_SETTINGS      = CONTROLSERVER_ROOT + "controlserver.xml";
         public const string CONTROLSERVER_LOGFILE       = CONTROLSERVER_ROOT + "logfile.txt";
 
+        //errorpages
+        public const string ERROR_ROOT                  = "..\\..\\Errorpages\\";
+        public const string ERROR_400                   = ERROR_ROOT + "400.html";
+        public const string ERROR_404                   = ERROR_ROOT + "404.html";
+
         // Security levels
         public const int SECURITY_BEHEERDER             = 1;
         public const int SECURITY_ONDERSTEUNER          = 2;

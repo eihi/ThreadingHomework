@@ -15,6 +15,7 @@ namespace Webserver
         private Socket socket;
         private ControlSettings controlData;
         private SendResponse sendResponse;
+        private int numberBytes;
         public static Semaphore limit { get; set; }
 
         public RequestHandler(TcpListener listener, ControlSettings controlData)
@@ -65,10 +66,10 @@ namespace Webserver
                         typenumber = 4;
                         break;
                     default:
-                        Console.WriteLine("Request Type: '"+ requestType + "' not allowed");
-                        string errorMessage = "<H2>400 Error! This is no legit request</H2>";
-                        sendResponse.SendHeader("HTTP/1.1", getMIMEtype(requestedFile), errorMessage.Length, " 400 Bad Request", ref socket);
-                        sendResponse.SendToBrowser(errorMessage, ref socket);
+                        numberBytes = 0;
+                        string response = processFile(CONST.ERROR_400);
+                        sendResponse.SendHeader("HTTP/1.1", getMIMEtype(CONST.ERROR_400), numberBytes, " 400 Bad Request", ref socket);
+                        sendResponse.SendToBrowser(response, ref socket);
                         log(requestType, requestedFile, socket.RemoteEndPoint);
                         break;
                 }
@@ -97,30 +98,16 @@ namespace Webserver
 
                 if (File.Exists(requestedFile) == false)
                 {
-                    string errorMessage = "<H2>404 Error! Page does not exists </H2>";
-                    sendResponse.SendHeader(HttpVersion, getMIMEtype(requestedFile), errorMessage.Length, "404 Not Found", ref socket);
-                    sendResponse.SendToBrowser(errorMessage, ref socket);
+                    numberBytes = 0;
+                    string response = processFile(CONST.ERROR_404);
+                    sendResponse.SendHeader(HttpVersion, getMIMEtype(CONST.ERROR_404), numberBytes, " 404 Not Found", ref socket);
+                    sendResponse.SendToBrowser(response, ref socket);
                     log(requestType, requestedFile, socket.RemoteEndPoint);
                 }
                 else
                 {
-                    int numberBytes = 0;
-                    string response = "";
-                    //TODO: show images correctly
-
-                    FileStream filestream = new FileStream(requestedFile, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-                    BinaryReader reader = new BinaryReader(filestream);
-                    Byte[] sendBytes = new Byte[filestream.Length];
-                    int n;
-                    while ((n = reader.Read(sendBytes, 0, sendBytes.Length)) != 0)
-                    {
-                        response += Encoding.ASCII.GetString(sendBytes, 0, n);
-                        numberBytes += n;
-                    }
-                    reader.Close();
-                    filestream.Close();
-
+                    numberBytes = 0;
+                    string response = processFile(requestedFile);
                     sendResponse.SendHeader(HttpVersion, getMIMEtype(requestedFile), numberBytes, " 200 OK ", ref socket);
                     sendResponse.SendToBrowser(response, ref socket);
                     log(requestType, requestedFile, socket.RemoteEndPoint);
@@ -129,27 +116,48 @@ namespace Webserver
             }
             limit.Release();
         }
+        private string processFile(string requestedFile)
+        {
+            string response = "";
+            //TODO: show images correctly
+            FileStream filestream = new FileStream(requestedFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+            BinaryReader reader = new BinaryReader(filestream);
+            Byte[] sendBytes = new Byte[filestream.Length];
+            int n;
+            while ((n = reader.Read(sendBytes, 0, sendBytes.Length)) != 0)
+            {
+                response += Encoding.ASCII.GetString(sendBytes, 0, n);
+                numberBytes += n;
+            }
+            reader.Close();
+            filestream.Close();
+            return response;
+        }
         private string getMIMEtype(string requestedFile)
         {
             requestedFile = requestedFile.ToLower();
             int startpos = requestedFile.IndexOf(".");
 
-            string fileExt = requestedFile.Substring(startpos);
-
-            switch (fileExt)
+            if (startpos > 0)
             {
-                case ".html":
-                    return "text/html";
-                    break;
-                case ".htm":
-                    return "text/html";
-                    break;
-                case ".png":
-                    return "image/png";
-                    break;
-                case ".jpg":
-                    return "image/jpg";
-                    break;
+                string fileExt = requestedFile.Substring(startpos);
+
+                switch (fileExt)
+                {
+                    case ".html":
+                        return "text/html";
+                        break;
+                    case ".htm":
+                        return "text/html";
+                        break;
+                    case ".png":
+                        return "image/png";
+                        break;
+                    case ".jpg":
+                        return "image/jpg";
+                        break;
+                }
             }
             return "text/html";
         }
