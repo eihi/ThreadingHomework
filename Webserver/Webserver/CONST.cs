@@ -24,13 +24,13 @@ namespace Webserver
         public const string SSL_PASSWORD                = "ab12345";
 
         // Databaseconnection config
-        public const string DBCONN_SERVER               = "http://databases.aii.avans.nl";
+        public const string DBCONN_SERVER               = "databases.aii.avans.nl";
         public const string DBCONN_DATABASE             = "sjpoel_db";
         public const string DBCONN_USERID               = "sjpoel";
         public const string DBCONN_PASSWORD             = "Ab12345";
 
         // Test account
-        public const string TEST_ACCOUNT                = "stefanie@avans.nl";
+        public const string TEST_ACCOUNT                = "stefanieavansnl";
         public const string TEST_PASSWORD               = "wachtwoord";
     }
 }

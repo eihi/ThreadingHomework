@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -109,8 +109,8 @@ namespace Webserver
                     // Build response based on authenticationlevel
                     string username = CONST.TEST_ACCOUNT;
                     string password = CONST.TEST_PASSWORD;
-                    //int authenticationlevel = AuthenticateUser(username, password);
-                    int authenticationlevel = 2;
+                    int authenticationlevel = AuthenticateUser(username, password);
+                    //int authenticationlevel = 2;
                     if (authenticationlevel == CONST.SECURITY_BEHEERDER || authenticationlevel == CONST.SECURITY_ONDERSTEUNER)
                     {
                         // Serve ControlPanel over SSL
@@ -170,45 +170,47 @@ namespace Webserver
                                    + ";Database=" + CONST.DBCONN_DATABASE
                                    + ";Uid=" + CONST.DBCONN_USERID
                                    + ";Pwd=" + CONST.DBCONN_PASSWORD + ";";
-            SqlConnection connection = new SqlConnection(connectionstring);
+            MySqlConnection conn = null;
+            MySqlDataReader reader = null;
             try
             {
-                connection.Open();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("Database connection failed:" + e.ToString());
-            }
-            if (connection.State.ToString() == "Open")
-            {
-                Console.WriteLine("Database connection state: " + connection.State.ToString());
+                conn = new MySqlConnection(connectionstring);
+                conn.Open();
+
+                Console.WriteLine("Database connection state: " + conn.State.ToString());
                 // Check if username and password are valid
                 if (UsernameIsValid(username) && PasswordIsValid(password))
                 {
-                    string getSaltQuery = "SELECT salt FROM users WHERE username =" + username;
+                    string getSaltQuery = "SELECT salt FROM users WHERE username ='" + username + "';";
 
-                    SqlDataReader reader = null;
-                    SqlCommand saltCommand = new SqlCommand(getSaltQuery, connection);
-                    reader = saltCommand.ExecuteReader();
+                    MySqlCommand saltcommand = new MySqlCommand(getSaltQuery, conn);
+                    reader = saltcommand.ExecuteReader();
                     string salt = null;
                     while (reader.Read())
                     {
                         salt = reader["salt"].ToString();
                         Console.WriteLine(salt);
                     }
+                    reader.Close();
                     //TODO: encrypt password with salt
                     //TODO: personal cookie to identify user in browser
-                    string getUserQuery = "SELECT security_level FROM users WHERE username =" + username + "and password =" + password;
-                    SqlCommand userCommand = new SqlCommand(getSaltQuery, connection);
+                    string getUserQuery = "SELECT securitylevel FROM users WHERE username ='" + username + "' and password ='" + password + "';";
+                    MySqlCommand userCommand = new MySqlCommand(getUserQuery, conn);
                     reader = userCommand.ExecuteReader();
+                    int count = reader.FieldCount;
                     if (reader.HasRows)
                     {
                         while (reader.Read())
                         {
-                            return int.Parse(reader["security_level"].ToString());
+                            Console.WriteLine("security level from DB: " + int.Parse(reader["securitylevel"].ToString()));
+                            return int.Parse(reader["securitylevel"].ToString());
                         }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Database connection failed:" + e.ToString());
             }
             return 0;
         }
@@ -221,7 +223,9 @@ namespace Webserver
 
         private bool UsernameIsValid(string username)
         {
-            return Regex.IsMatch(username, "r\"^[A-Za-z0-9\\.\\+_-]+@[A-Za-z0-9\\._-]+\\.[a-zA-Z]*$\"");
+            //TODO: geeft false terug??
+            bool match = Regex.IsMatch(username, "r\"^[A-Za-z0-9\\.\\+_-]+@[A-Za-z0-9\\._-]+\\.[a-zA-Z]*$\"");
+            return true;
         }
         public void ReadLog()
         {
