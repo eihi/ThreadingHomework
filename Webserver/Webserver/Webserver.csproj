@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CONST.cs" />
+    <Compile Include="ControlRequestHandler.cs" />
     <Compile Include="ControlSettings.cs" />
     <Compile Include="ControlServer.cs" />
     <Compile Include="Logger.cs" />

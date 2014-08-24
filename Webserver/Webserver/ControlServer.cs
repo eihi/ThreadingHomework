@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MySql.Data.MySqlClient;
+//using MySql.Data.MySqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -29,45 +29,31 @@ namespace Webserver
         public ControlServer()
         {
             //thread starten en startserver aanroepen
-            settings = new ControlSettings();
+            settings = new ControlSettings().Load();
             sendResponse = new SendResponse();
-            readXML();
             Thread controlThread = new Thread(startServer);
             controlThread.Start();
 
         }
-        public SslStream createStream(TcpClient client)
+        public void startServer() 
         {
-            try
-            {
-                X509Certificate serverCertificate = new X509Certificate2(CONST.SSL_CERTIFICATE, CONST.SSL_PASSWORD);
-                var sslStream = new SslStream(client.GetStream(), false);
-                sslStream.AuthenticateAsServer(serverCertificate, false, SslProtocols.Tls, true);
-                return sslStream;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("SSLStream creation failed:" + e.ToString());
-                return null;
-            }
-        }
-        public void startServer()
-        {
-            if (settings.Controlport.ToString().Length == 0)
-            {
-                settings.Controlport = 8081;
-            }
-            TcpListener serverSocket = new TcpListener(settings.Controlport);
-            serverSocket.Start();
+            TcpListener listener = new TcpListener(settings.Controlport);
+            listener.Start();
             Console.WriteLine("ControlServer Started - Listening on port:" + settings.Controlport);
 
-            Byte[] bytes = new Byte[256];
-            string streamData = null;
+            ControlRequestHandler handler = new ControlRequestHandler(listener, settings);
+        }
+        public void startServer(string something)
+        {
+            TcpListener listener = new TcpListener(settings.Controlport);
+            listener.Start();
+            Console.WriteLine("ControlServer Started - Listening on port:" + settings.Controlport);
+
 
             while(true)
             {
                 Console.WriteLine("waiting for client to connect");
-                TcpClient client = serverSocket.AcceptTcpClient();
+                TcpClient client = listener.AcceptTcpClient();
                 if (client.Connected)
                 {
                     
@@ -109,8 +95,8 @@ namespace Webserver
                     // Build response based on authenticationlevel
                     string username = CONST.TEST_ACCOUNT;
                     string password = CONST.TEST_PASSWORD;
-                    int authenticationlevel = AuthenticateUser(username, password);
-                    //int authenticationlevel = 2;
+                    //int authenticationlevel = AuthenticateUser(username, password);
+                    int authenticationlevel = 1;
                     if (authenticationlevel == CONST.SECURITY_BEHEERDER || authenticationlevel == CONST.SECURITY_ONDERSTEUNER)
                     {
                         // Serve ControlPanel over SSL
@@ -122,6 +108,21 @@ namespace Webserver
                         sendResponse.SendSSLResponse(sslStream, LoginFormBuilder());
                     }
                 }
+            }
+        }
+        public SslStream createStream(TcpClient client)
+        {
+            try
+            {
+                X509Certificate serverCertificate = new X509Certificate2(CONST.SSL_CERTIFICATE, CONST.SSL_PASSWORD);
+                var sslStream = new SslStream(client.GetStream(), false);
+                sslStream.AuthenticateAsServer(serverCertificate, false, SslProtocols.Tls, true);
+                return sslStream;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("SSLStream creation failed:" + e.ToString());
+                return null;
             }
         }
 
@@ -166,7 +167,7 @@ namespace Webserver
 
         public int AuthenticateUser(string username, string password)
         {
-            string connectionstring = "Server=" + CONST.DBCONN_SERVER
+            /*string connectionstring = "Server=" + CONST.DBCONN_SERVER
                                    + ";Database=" + CONST.DBCONN_DATABASE
                                    + ";Uid=" + CONST.DBCONN_USERID
                                    + ";Pwd=" + CONST.DBCONN_PASSWORD + ";";
@@ -211,7 +212,7 @@ namespace Webserver
             catch (Exception e)
             {
                 Console.WriteLine("Database connection failed:" + e.ToString());
-            }
+            }*/
             return 0;
         }
 
@@ -230,23 +231,6 @@ namespace Webserver
         public void ReadLog()
         {
             //TODO: read log file and show in browser
-        }
-        
-        public void writeXML()
-        {
-            XmlSerializer writer = new XmlSerializer(typeof(ControlSettings));
-            StreamWriter file = new StreamWriter(CONST.CONTROLSERVER_SETTINGS);
-            if (file != null)
-            {
-                writer.Serialize(file, settings);
-            }
-            file.Close();
-        }
-        public void readXML()
-        {
-            XmlSerializer reader = new XmlSerializer(typeof(ControlSettings));
-            StreamReader file = new StreamReader(CONST.CONTROLSERVER_SETTINGS);
-            settings = (ControlSettings)reader.Deserialize(file);
         }
 
     }
