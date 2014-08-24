@@ -15,6 +15,7 @@ namespace Webserver
         private Socket socket;
         private ControlSettings controlData;
         private SendResponse sendResponse;
+        private int numberBytes;
         public static Semaphore limit { get; set; }
 
         public RequestHandler(TcpListener listener, ControlSettings controlData)
@@ -45,111 +46,141 @@ namespace Webserver
                 
                 //get http request
                 int index = buffer.IndexOf("HTTP", 1);
-                string HttpVersion = buffer.Substring(index, 8);
-                string request = buffer.Substring(0, index - 1);
-                request.Replace("\\", "/");
-
-
-                //extract requested file name
-                index = request.LastIndexOf("/") + 1;
-                string requestedFile = "/" + request.Substring(index);
-
-                //handle GET
-                int typenumber = 3;
-                switch (requestType)
+                if (index != -1)
                 {
-                    case "GET":
-                        typenumber = 3;
-                        break;
-                    case "POST":
-                        typenumber = 4;
-                        break;
-                    default:
-                        Console.WriteLine("Request Type: '"+ requestType + "' not allowed");
-                        string errorMessage = "<H2>400 Error! This is no legit request</H2>";
-                        sendResponse.SendHeader("HTTP/1.1", getMIMEtype(requestedFile), errorMessage.Length, " 400 Bad Request", ref socket);
-                        sendResponse.SendToBrowser(errorMessage, ref socket);
-                        log(requestType, requestedFile, socket.RemoteEndPoint);
-                        break;
-                }
+                    string HttpVersion = buffer.Substring(index, 8);
+                    string request = buffer.Substring(0, index - 1);
+                    request.Replace("\\", "/");
 
 
-                //directory browsing true
-                if (controlData.Directorybrowsing == true)
-                {
-                    string directory = request.Substring(request.IndexOf("/"), request.LastIndexOf("/") - typenumber);
-                    requestedFile = directory + requestedFile;
-                }
+                    //extract requested file name
+                    index = request.LastIndexOf("/") + 1;
+                    string requestedFile = "/" + request.Substring(index);
 
-
-                //if requested file is nothing use default
-                if (requestedFile.Length <= 2 || requestedFile == "//favicon.ico")
-                {
-                    requestedFile = controlData.Webroot + "\\" + controlData.Defaultpage;
-                }
-                else
-                {
-                    //set full path
-                    requestedFile = controlData.Webroot + requestedFile;
-                    Console.WriteLine("requested file: " + requestedFile);
-                }
-
-
-                if (File.Exists(requestedFile) == false)
-                {
-                    string errorMessage = "<H2>404 Error! Page does not exists </H2>";
-                    sendResponse.SendHeader(HttpVersion, getMIMEtype(requestedFile), errorMessage.Length, "404 Not Found", ref socket);
-                    sendResponse.SendToBrowser(errorMessage, ref socket);
-                    log(requestType, requestedFile, socket.RemoteEndPoint);
-                }
-                else
-                {
-                    int numberBytes = 0;
-                    string response = "";
-                    //TODO: show images correctly
-
-                    FileStream filestream = new FileStream(requestedFile, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-                    BinaryReader reader = new BinaryReader(filestream);
-                    Byte[] sendBytes = new Byte[filestream.Length];
-                    int n;
-                    while ((n = reader.Read(sendBytes, 0, sendBytes.Length)) != 0)
+                    //handle GET
+                    int typenumber = 3;
+                    switch (requestType)
                     {
-                        response += Encoding.ASCII.GetString(sendBytes, 0, n);
-                        numberBytes += n;
+                        case "GET":
+                            typenumber = 3;
+                            break;
+                        case "POST":
+                            typenumber = 4;
+                            break;
+                        default:
+                            numberBytes = 0;
+                            string response = processFile(CONST.ERROR_400);
+                            sendResponse.SendHeader("HTTP/1.1", getMIMEtype(CONST.ERROR_400), numberBytes, " 400 Bad Request", ref socket);
+                            sendResponse.SendToBrowser(response, ref socket);
+                            log(requestType, requestedFile, socket.RemoteEndPoint);
+                            break;
                     }
-                    reader.Close();
-                    filestream.Close();
 
-                    sendResponse.SendHeader(HttpVersion, getMIMEtype(requestedFile), numberBytes, " 200 OK ", ref socket);
-                    sendResponse.SendToBrowser(response, ref socket);
-                    log(requestType, requestedFile, socket.RemoteEndPoint);
+
+                    //directory browsing true
+                    if (controlData.Directorybrowsing == true)
+                    {
+                        string directory = request.Substring(request.IndexOf("/"), request.LastIndexOf("/") - typenumber);
+                        requestedFile = directory + requestedFile;
+                    }
+
+
+                    //if requested file is nothing use default
+                    if (requestedFile.Length <= 2 || requestedFile == "//favicon.ico")
+                    {
+                        requestedFile = controlData.Webroot + "\\" + controlData.Defaultpage;
+                    }
+                    else
+                    {
+                        //set full path
+                        requestedFile = controlData.Webroot + requestedFile;
+                        Console.WriteLine("requested file: " + requestedFile);
+                    }
+
+
+                    if (File.Exists(requestedFile) == false)
+                    {
+                        numberBytes = 0;
+                        string response = processFile(CONST.ERROR_404);
+                        sendResponse.SendHeader(HttpVersion, getMIMEtype(CONST.ERROR_404), numberBytes, " 404 Not Found", ref socket);
+                        sendResponse.SendToBrowser(response, ref socket);
+                        log(requestType, requestedFile, socket.RemoteEndPoint);
+                    }
+                    else
+                    {
+                        numberBytes = 0;
+                        string response = processFile(requestedFile);
+                        sendResponse.SendHeader(HttpVersion, getMIMEtype(requestedFile), numberBytes, " 200 OK ", ref socket);
+                        sendResponse.SendToBrowser(response, ref socket);
+                        log(requestType, requestedFile, socket.RemoteEndPoint);
+                    }
+                    socket.Close();
                 }
-                socket.Close();
+                else
+                {
+                    numberBytes = 0;
+                    string response = processFile(CONST.ERROR_400);
+                    sendResponse.SendHeader("HTTP/1.1", getMIMEtype(CONST.ERROR_400), numberBytes, " 400 Bad Request", ref socket);
+                    sendResponse.SendToBrowser(response, ref socket);
+                    log(requestType, CONST.ERROR_400, socket.RemoteEndPoint);
+                }
             }
             limit.Release();
+        }
+        private string processFile(string requestedFile)
+        {
+            string response = "";
+            //TODO: show images correctly
+            try
+            {
+                FileStream filestream = new FileStream(requestedFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+                BinaryReader reader = new BinaryReader(filestream);
+                Byte[] sendBytes = new Byte[filestream.Length];
+                int n;
+                while ((n = reader.Read(sendBytes, 0, sendBytes.Length)) != 0)
+                {
+                    response += Encoding.ASCII.GetString(sendBytes, 0, n);
+                    numberBytes += n;
+                }
+                reader.Close();
+                filestream.Close();
+                return response;
+            }
+            catch(Exception e)
+            {
+                numberBytes = 0;
+                string errorresponse = processFile(CONST.ERROR_401);
+                sendResponse.SendHeader("HTTP/1.1", getMIMEtype(CONST.ERROR_400), numberBytes, " 401 Unauthorized", ref socket);
+                sendResponse.SendToBrowser(errorresponse, ref socket);
+                log("", requestedFile, socket.RemoteEndPoint);
+            }
+            return "";
+            
         }
         private string getMIMEtype(string requestedFile)
         {
             requestedFile = requestedFile.ToLower();
             int startpos = requestedFile.IndexOf(".");
 
-            string fileExt = requestedFile.Substring(startpos);
-
-            switch (fileExt)
+            if (startpos > 0)
             {
-                case ".html":
-                    return "text/html";
-                    break;
-                case ".htm":
-                    return "text/html";
-                    break;
-                case ".png":
-                    return "image/png";
-                    break;
-                case ".jpg":
-                    return "image/jpg";
-                    break;
+                string fileExt = requestedFile.Substring(startpos);
+
+                switch (fileExt)
+                {
+                    case ".html":
+                        return "text/html";
+                        break;
+                    case ".htm":
+                        return "text/html";
+                        break;
+                    case ".png":
+                        return "image/png";
+                        break;
+                    case ".jpg":
+                        return "image/jpg";
+                        break;
+                }
             }
             return "text/html";
         }

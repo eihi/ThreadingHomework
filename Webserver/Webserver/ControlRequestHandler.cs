@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.IO;
 //using MySql.Data.MySqlClient;
@@ -114,9 +115,11 @@ namespace Webserver
                 // Check if username and password are valid
                 if (UsernameIsValid(username) && PasswordIsValid(password))
                 {
-                    string getSaltQuery = "SELECT salt FROM users WHERE username ='" + username + "';";
+                    string getSaltQuery = "SELECT salt FROM users WHERE username = @Username;";
 
                     MySqlCommand saltcommand = new MySqlCommand(getSaltQuery, conn);
+                    saltcommand.Parameters.Add(new MySqlParameter("Username", username));
+                    
                     reader = saltcommand.ExecuteReader();
                     string salt = null;
                     while (reader.Read())
@@ -127,8 +130,11 @@ namespace Webserver
                     reader.Close();
                     //TODO: encrypt password with salt
                     //TODO: personal cookie to identify user in browser
-                    string getUserQuery = "SELECT securitylevel FROM users WHERE username ='" + username + "' and password ='" + password + "';";
+                    string getUserQuery = "SELECT securitylevel FROM users WHERE username = @Username and password = @Password;";
                     MySqlCommand userCommand = new MySqlCommand(getUserQuery, conn);
+                    userCommand.Parameters.Add(new MySqlParameter("Username", username));
+                    userCommand.Parameters.Add(new MySqlParameter("Password", password));
+
                     reader = userCommand.ExecuteReader();
                     int count = reader.FieldCount;
                     if (reader.HasRows)
