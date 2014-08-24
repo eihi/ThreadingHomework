@@ -111,8 +111,8 @@ namespace Webserver
                     // Build response based on authenticationlevel
                     string username = CONST.TEST_ACCOUNT;
                     string password = CONST.TEST_PASSWORD;
-                    int authenticationlevel = AuthenticateUser(username, password);
-                    authenticationlevel = 1;
+                    //int authenticationlevel = AuthenticateUser(username, password);
+                    int authenticationlevel = 1;
                     if (authenticationlevel == CONST.SECURITY_BEHEERDER || authenticationlevel == CONST.SECURITY_ONDERSTEUNER)
                     {
                         sendResponse.SendSSLResponse(sslStream, ControlPanelBuilder(authenticationlevel));
@@ -137,11 +137,11 @@ namespace Webserver
             html += "<tr>\n<td>Web port: </td>\n";
             html += "<td><input type=\"text\" name=\"webport\" value=\""+settings.Webport+"\" "+disabledValue+"></td>\n";
             html += "</tr>\n<tr>\n<td>Control port: </td>\n";
-            html += "<td><input type=\"text\" name=\"controlport value=\"" + settings.Controlport + "\" " + disabledValue + "></td>\n";
+            html += "<td><input type=\"text\" name=\"controlport\" value=\"" + settings.Controlport + "\" " + disabledValue + "></td>\n";
             html += "</tr>\n<tr>\n<td>Webroot: </td>\n";
-            html += "<td><input type=\"text\" name=\"webroot value=\"" + settings.Webroot + "\" " + disabledValue + "></td>\n";
+            html += "<td><input type=\"text\" name=\"webroot\" value=\"" + settings.Webroot + "\" " + disabledValue + "></td>\n";
             html += "</tr>\n<tr>\n<td>Default page: </td>\n";
-            html += "<td><input type=\"text\" name=\"defaultpage value=\"" + settings.Defaultpage + "\" " + disabledValue + "></td>\n";
+            html += "<td><input type=\"text\" name=\"defaultpage\" value=\"" + settings.Defaultpage + "\" " + disabledValue + "></td>\n";
             html += "</tr>\n<tr>\n<td>Directory browsing: </td>\n";
             html += "<td><input type=\"checkbox\" name=\"dirbrow\""+checkedValue+"></td>\n";
             html += "</tr>\n<tr>\n<td><input type=\"button\" value=\"Show Log\"></td>\n";
