@@ -1,8 +1,7 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-//using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
