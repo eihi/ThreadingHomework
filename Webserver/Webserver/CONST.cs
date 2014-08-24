@@ -18,6 +18,7 @@ namespace Webserver
         //errorpages
         public const string ERROR_ROOT                  = "..\\..\\Errorpages\\";
         public const string ERROR_400                   = ERROR_ROOT + "400.html";
+        public const string ERROR_401                   = ERROR_ROOT + "401.html";
         public const string ERROR_404                   = ERROR_ROOT + "404.html";
 
         // Security levels
