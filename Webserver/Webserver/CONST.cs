@@ -33,7 +33,7 @@ namespace Webserver
         public const string DBCONN_PASSWORD             = "Ab12345";
 
         // Test account
-        public const string TEST_ACCOUNT                = "stefanie";
+        public const string TEST_ACCOUNT                = "stefanie@avans.nl";
         public const string TEST_PASSWORD               = "wachtwoord";
     }
 }

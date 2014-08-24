@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -165,31 +166,44 @@ namespace Webserver
                 Console.WriteLine("Database connection failed:" + e.ToString());
             }
             //TODO: sql injection 
-            string getSaltQuery = "SELECT salt FROM users WHERE username ="+ username;
+            if (UsernameIsValid(username) && PasswordIsValid(password))
+            {
+                string getSaltQuery = "SELECT salt FROM users WHERE username =" + username;
 
-            SqlDataReader reader = null;
-            SqlCommand saltCommand = new SqlCommand(getSaltQuery, connection);
-            reader = saltCommand.ExecuteReader();
-            string salt = null;
-            while(reader.Read())
-            {
-                salt = reader["salt"].ToString();
-                Console.WriteLine(salt);
-            }
-            //TODO: encrypt password with salt
-            //TODO: personal cookie to identify user in browser
-            string getUserQuery = "SELECT security_level FROM users WHERE username =" + username + "and password =" + password;
-            SqlCommand userCommand = new SqlCommand(getSaltQuery, connection);
-            reader = userCommand.ExecuteReader();
-            if(reader.HasRows)
-            {
+                SqlDataReader reader = null;
+                SqlCommand saltCommand = new SqlCommand(getSaltQuery, connection);
+                reader = saltCommand.ExecuteReader();
+                string salt = null;
                 while (reader.Read())
                 {
-                    return int.Parse(reader["security_level"].ToString());
+                    salt = reader["salt"].ToString();
+                    Console.WriteLine(salt);
+                }
+                //TODO: encrypt password with salt
+                //TODO: personal cookie to identify user in browser
+                string getUserQuery = "SELECT security_level FROM users WHERE username =" + username + "and password =" + password;
+                SqlCommand userCommand = new SqlCommand(getSaltQuery, connection);
+                reader = userCommand.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        return int.Parse(reader["security_level"].ToString());
+                    }
                 }
             }
-
             return 0;
+        }
+
+        private bool PasswordIsValid(string password)
+        {
+            //TODO: password validation
+            return true;
+        }
+
+        private bool UsernameIsValid(string username)
+        {
+            return Regex.IsMatch(username, "r\"^[A-Za-z0-9\\.\\+_-]+@[A-Za-z0-9\\._-]+\\.[a-zA-Z]*$\"");
         }
         public void ReadLog()
         {
