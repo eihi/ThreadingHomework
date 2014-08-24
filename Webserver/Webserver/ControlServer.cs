@@ -112,14 +112,16 @@ namespace Webserver
                     string username = CONST.TEST_ACCOUNT;
                     string password = CONST.TEST_PASSWORD;
                     //int authenticationlevel = AuthenticateUser(username, password);
-                    int authenticationlevel = 1;
+                    int authenticationlevel = 0;
                     if (authenticationlevel == CONST.SECURITY_BEHEERDER || authenticationlevel == CONST.SECURITY_ONDERSTEUNER)
                     {
+                        // Serve ControlPanel
                         sendResponse.SendSSLResponse(sslStream, ControlPanelBuilder(authenticationlevel));
                     }
                     else
                     {
-                        //TODO: redirect to loginform
+                        // Serve LoginForm
+                        sendResponse.SendSSLResponse(sslStream, LoginFormBuilder());
                     }
                 }
             }
@@ -147,6 +149,20 @@ namespace Webserver
             html += "</tr>\n<tr>\n<td><input type=\"button\" value=\"Show Log\"></td>\n";
             html += "<td><input type=\"submit\" value=\"OK\"></td>\n</tr>\n";
             html += "</table>\n</form>\n</div>\n</body>\n</html>\n";
+            return html;
+        }
+
+        private string LoginFormBuilder()
+        {
+            string html = "";
+            html += "<!doctype html> <html lang=\"en\">";
+            html += "<head><style>table {border:1px solid #000;padding:5px;}td {padding:5px;}</style></head>";
+	        html += "<body><div><form method=\"POST\">";
+		  	html += "<table><tr><td><h1>Control Panel</h1></td><td><h1>Login</h1></td></tr>";
+			html += "<tr><td>Username: </td><td><input type=\"text\" name=\"uid\"></td></tr>";
+			html += "<tr><td>Password: </td><td><input type=\"password\" name=\"pwd\"></td></tr>";
+			html += "<tr><td></td><td><input type=\"submit\" value=\"Login\"></td></tr>";
+            html += "</table></form></div></body></html>";
             return html;
         }
 

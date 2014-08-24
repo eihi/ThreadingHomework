@@ -17,24 +17,26 @@ namespace Webserver
         }
         public void SendSSLResponse(SslStream sslStream, string html)
         {
-            string response = "";
-            byte[] sendBytes = new byte[2048];
-            sendBytes = Encoding.ASCII.GetBytes(html);
+            if (sslStream != null)
+            {
+                byte[] sendBytes = new byte[2048];
+                sendBytes = Encoding.ASCII.GetBytes(html);
 
-            //FileStream filestream = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                //FileStream filestream = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-            //BinaryReader reader = new BinaryReader(filestream);
-            //Byte[] sendBytes = new Byte[filestream.Length];
-            //int n;
-            //while ((n = reader.Read(sendBytes, 0, sendBytes.Length)) != 0)
-            //{
-            //    response += Encoding.ASCII.GetString(sendBytes, 0, n);
-            //}
-            //reader.Close();
-            //filestream.Close();
+                //BinaryReader reader = new BinaryReader(filestream);
+                //Byte[] sendBytes = new Byte[filestream.Length];
+                //int n;
+                //while ((n = reader.Read(sendBytes, 0, sendBytes.Length)) != 0)
+                //{
+                //    response += Encoding.ASCII.GetString(sendBytes, 0, n);
+                //}
+                //reader.Close();
+                //filestream.Close();
 
-            sslStream.Write(sendBytes);
-            sslStream.Flush();
+                sslStream.Write(sendBytes);
+                sslStream.Flush();
+            }
         }
         public void SendHeader(string sHttpVersion, int iTotBytes, string sStatusCode, ref Socket mySocket)
         {
