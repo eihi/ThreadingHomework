@@ -38,12 +38,10 @@ namespace Webserver
                 sslStream.Flush();
             }
         }
-        public void SendHeader(string sHttpVersion, int iTotBytes, string sStatusCode, ref Socket mySocket)
+        public void SendHeader(string sHttpVersion,string sMIMEheader, int iTotBytes, string sStatusCode, ref Socket mySocket)
         {
 
             String sBuffer = "";
-
-            string sMIMEheader = "text/html";
 
             sBuffer = sBuffer + sHttpVersion + sStatusCode + "\r\n";
             sBuffer = sBuffer + "Server: cx1193719-b\r\n";

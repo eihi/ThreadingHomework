@@ -13,6 +13,7 @@ namespace Webserver
         // Controlserver config
         public const string CONTROLSERVER_ROOT          = "..\\..\\Controlserver\\";
         public const string CONTROLSERVER_SETTINGS      = CONTROLSERVER_ROOT + "controlserver.xml";
+        public const string CONTROLSERVER_LOGFILE       = CONTROLSERVER_ROOT + "logfile.txt";
 
         // Security levels
         public const int SECURITY_BEHEERDER             = 1;

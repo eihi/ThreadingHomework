@@ -1,0 +1,253 @@
+RequestType: GET
+Ip adres: 127.0.0.1:63453
+Datetime: 24-8-2014 20:40:20
+
+RequestType: GET
+Ip adres: 127.0.0.1:63613
+Datetime: 24-8-2014 20:42:47
+
+RequestType: GET
+Ip adres: 127.0.0.1:63615
+Datetime: 24-8-2014 20:42:48
+
+RequestType: GET
+Ip adres: 127.0.0.1:63617
+Datetime: 24-8-2014 20:42:48
+
+RequestType: GET
+Ip adres: 127.0.0.1:63625
+Datetime: 24-8-2014 20:42:58
+
+RequestType: GET
+Ip adres: 127.0.0.1:63627
+Datetime: 24-8-2014 20:42:58
+
+RequestType: GET
+Ip adres: 127.0.0.1:63629
+Datetime: 24-8-2014 20:42:58
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:63891
+Datetime: 24-8-2014 20:47:22
+
+RequestType: GET
+URL: c:\webroot//Lighthouse.png
+Ip adres: 127.0.0.1:63893
+Datetime: 24-8-2014 20:47:23
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:63895
+Datetime: 24-8-2014 20:47:23
+
+RequestType: GET
+URL: c:\webroot//page.html
+Ip adres: 127.0.0.1:63901
+Datetime: 24-8-2014 20:47:28
+
+RequestType: GET
+URL: c:\webroot//Tulips.png
+Ip adres: 127.0.0.1:63903
+Datetime: 24-8-2014 20:47:28
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:63905
+Datetime: 24-8-2014 20:47:29
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:63907
+Datetime: 24-8-2014 20:47:29
+
+RequestType: GET
+URL: c:\webroot//page.html
+Ip adres: 127.0.0.1:49235
+Datetime: 24-8-2014 21:15:12
+
+RequestType: GET
+URL: c:\webroot//Tulips.png
+Ip adres: 127.0.0.1:49237
+Datetime: 24-8-2014 21:15:13
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:49239
+Datetime: 24-8-2014 21:15:13
+
+RequestType: GET
+URL: c:\webroot//tulips.png
+Ip adres: 127.0.0.1:49253
+Datetime: 24-8-2014 21:15:32
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:49257
+Datetime: 24-8-2014 21:15:33
+
+RequestType: GET
+URL: c:\webroot//tulips.png
+Ip adres: 127.0.0.1:49311
+Datetime: 24-8-2014 21:17:02
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:49313
+Datetime: 24-8-2014 21:17:02
+
+RequestType: GET
+URL: c:\webroot//tulips.png
+Ip adres: 127.0.0.1:49398
+Datetime: 24-8-2014 21:19:21
+
+RequestType: GET
+URL: c:\webroot//tulips.jpg
+Ip adres: 127.0.0.1:64081
+Datetime: 24-8-2014 21:28:01
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64128
+Datetime: 24-8-2014 21:28:10
+
+RequestType: GET
+URL: c:\webroot//page.html
+Ip adres: 127.0.0.1:64153
+Datetime: 24-8-2014 21:28:28
+
+RequestType: GET
+URL: c:\webroot//Tulips.jpg
+Ip adres: 127.0.0.1:64155
+Datetime: 24-8-2014 21:28:28
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64157
+Datetime: 24-8-2014 21:28:28
+
+RequestType: GET
+URL: c:\webroot//tulips.jpg
+Ip adres: 127.0.0.1:64163
+Datetime: 24-8-2014 21:28:39
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64165
+Datetime: 24-8-2014 21:28:39
+
+RequestType: GET
+URL: c:\webroot//page.html
+Ip adres: 127.0.0.1:64189
+Datetime: 24-8-2014 21:29:26
+
+RequestType: GET
+URL: c:\webroot//Tulips.jpg
+Ip adres: 127.0.0.1:64191
+Datetime: 24-8-2014 21:29:26
+
+RequestType: GET
+URL: c:\webroot//page.html
+Ip adres: 127.0.0.1:64193
+Datetime: 24-8-2014 21:29:26
+
+RequestType: GET
+URL: c:\webroot//Tulips.jpg
+Ip adres: 127.0.0.1:64195
+Datetime: 24-8-2014 21:29:26
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64197
+Datetime: 24-8-2014 21:29:27
+
+RequestType: GET
+URL: c:\webroot/folder//page.html
+Ip adres: 127.0.0.1:64203
+Datetime: 24-8-2014 21:29:36
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64205
+Datetime: 24-8-2014 21:29:36
+
+RequestType: GET
+URL: c:\webroot/folder/C:/webroot/folder//Tulips.jpg
+Ip adres: 127.0.0.1:64207
+Datetime: 24-8-2014 21:29:42
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64211
+Datetime: 24-8-2014 21:29:43
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64240
+Datetime: 24-8-2014 21:30:20
+
+RequestType: GET
+URL: c:\webroot/C:/webroot/folder//Tulips.jpg
+Ip adres: 127.0.0.1:64242
+Datetime: 24-8-2014 21:30:24
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64246
+Datetime: 24-8-2014 21:30:24
+
+RequestType: GET
+URL: c:\webroot/folder//Tulips.jpg
+Ip adres: 127.0.0.1:64252
+Datetime: 24-8-2014 21:30:30
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64254
+Datetime: 24-8-2014 21:30:30
+
+RequestType: GET
+URL: c:\webroot//page.html
+Ip adres: 127.0.0.1:64270
+Datetime: 24-8-2014 21:31:00
+
+RequestType: GET
+URL: c:\webroot//Tulips.jpg
+Ip adres: 127.0.0.1:64272
+Datetime: 24-8-2014 21:31:00
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64274
+Datetime: 24-8-2014 21:31:00
+
+RequestType: GET
+URL: c:\webroot//page.html
+Ip adres: 127.0.0.1:64276
+Datetime: 24-8-2014 21:31:01
+
+RequestType: GET
+URL: c:\webroot//Tulips.jpg
+Ip adres: 127.0.0.1:64278
+Datetime: 24-8-2014 21:31:01
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64280
+Datetime: 24-8-2014 21:31:01
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64286
+Datetime: 24-8-2014 21:31:08
+
+RequestType: GET
+URL: c:\webroot//Lighthouse.jpg
+Ip adres: 127.0.0.1:64288
+Datetime: 24-8-2014 21:31:08
+
+RequestType: GET
+URL: c:\webroot\index.html
+Ip adres: 127.0.0.1:64290
+Datetime: 24-8-2014 21:31:08
+

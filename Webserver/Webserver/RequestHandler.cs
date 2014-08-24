@@ -42,6 +42,18 @@ namespace Webserver
                 string buffer = Encoding.ASCII.GetString(receivedBytes);
                 Console.WriteLine(buffer);
                 string requestType = buffer.Substring(0, 3);
+                
+                //get http request
+                int index = buffer.IndexOf("HTTP", 1);
+                string HttpVersion = buffer.Substring(index, 8);
+                string request = buffer.Substring(0, index - 1);
+                request.Replace("\\", "/");
+
+
+                //extract requested file name
+                index = request.LastIndexOf("/") + 1;
+                string requestedFile = "/" + request.Substring(index);
+
                 //handle GET
                 int typenumber = 3;
                 switch (requestType)
@@ -55,22 +67,12 @@ namespace Webserver
                     default:
                         Console.WriteLine("Request Type: '"+ requestType + "' not allowed");
                         string errorMessage = "<H2>400 Error! This is no legit request</H2>";
-                        sendResponse.SendHeader("HTTP/1.1", errorMessage.Length, " 400 Bad Request", ref socket);
+                        sendResponse.SendHeader("HTTP/1.1", getMIMEtype(requestedFile), errorMessage.Length, " 400 Bad Request", ref socket);
                         sendResponse.SendToBrowser(errorMessage, ref socket);
-                        log(requestType, socket.RemoteEndPoint);
+                        log(requestType, requestedFile, socket.RemoteEndPoint);
                         break;
                 }
 
-                //get http request
-                int index = buffer.IndexOf("HTTP", 1);
-                string HttpVersion = buffer.Substring(index, 8);
-                string request = buffer.Substring(0, index - 1);
-                request.Replace("\\", "/");
-
-
-                //extract requested file name
-                index = request.LastIndexOf("/") + 1;
-                string requestedFile = "/" + request.Substring(index);
 
                 //directory browsing true
                 if (controlData.Directorybrowsing == true)
@@ -96,9 +98,9 @@ namespace Webserver
                 if (File.Exists(requestedFile) == false)
                 {
                     string errorMessage = "<H2>404 Error! Page does not exists </H2>";
-                    sendResponse.SendHeader(HttpVersion, errorMessage.Length, "404 Not Found", ref socket);
+                    sendResponse.SendHeader(HttpVersion, getMIMEtype(requestedFile), errorMessage.Length, "404 Not Found", ref socket);
                     sendResponse.SendToBrowser(errorMessage, ref socket);
-                    log(requestType, socket.RemoteEndPoint);
+                    log(requestType, requestedFile, socket.RemoteEndPoint);
                 }
                 else
                 {
@@ -119,13 +121,37 @@ namespace Webserver
                     reader.Close();
                     filestream.Close();
 
-                    sendResponse.SendHeader(HttpVersion, numberBytes, " 200 OK ", ref socket);
+                    sendResponse.SendHeader(HttpVersion, getMIMEtype(requestedFile), numberBytes, " 200 OK ", ref socket);
                     sendResponse.SendToBrowser(response, ref socket);
-                    //log(requestType, socket.RemoteEndPoint);
+                    log(requestType, requestedFile, socket.RemoteEndPoint);
                 }
                 socket.Close();
             }
             limit.Release();
+        }
+        private string getMIMEtype(string requestedFile)
+        {
+            requestedFile = requestedFile.ToLower();
+            int startpos = requestedFile.IndexOf(".");
+
+            string fileExt = requestedFile.Substring(startpos);
+
+            switch (fileExt)
+            {
+                case ".html":
+                    return "text/html";
+                    break;
+                case ".htm":
+                    return "text/html";
+                    break;
+                case ".png":
+                    return "image/png";
+                    break;
+                case ".jpg":
+                    return "image/jpg";
+                    break;
+            }
+            return "text/html";
         }
 
         private byte[] ReceiveClientData()
@@ -135,10 +161,11 @@ namespace Webserver
             int i = socket.Receive(receivedBytes, receivedBytes.Length, 0);
             return receivedBytes;
         }
-        public void log(string requestType, EndPoint ip)
+        public void log(string requestType, string url, EndPoint ip)
         {
             Logger logger = new Logger();
             string line = "RequestType: " + requestType + "\r\n";
+            line += "URL: " + url + "\r\n";
             line += "Ip adres: " + ip + "\r\n";
             line += "Datetime: " + DateTime.Now.ToString() + "\r\n";
             logger.logMessage(line);
