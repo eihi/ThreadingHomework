@@ -10,6 +10,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace Webserver
 {
@@ -166,11 +167,14 @@ namespace Webserver
                     }
                     reader.Close();
                     //TODO: encrypt password with salt
+                    MD5hasher hasher = new MD5hasher();
+                    string hashedPass = hasher.GetMd5Hash(password, salt);
+
                     //TODO: personal cookie to identify user in browser
                     string getUserQuery = "SELECT securitylevel FROM users WHERE username = @Username and password = @Password;";
                     MySqlCommand userCommand = new MySqlCommand(getUserQuery, conn);
                     userCommand.Parameters.Add(new MySqlParameter("Username", username));
-                    userCommand.Parameters.Add(new MySqlParameter("Password", password));
+                    userCommand.Parameters.Add(new MySqlParameter("Password", hashedPass));
 
                     reader = userCommand.ExecuteReader();
                     int count = reader.FieldCount;
@@ -182,6 +186,7 @@ namespace Webserver
                             return int.Parse(reader["securitylevel"].ToString());
                         }
                     }
+                    return 0;
                 }
             }
             catch (Exception e)
