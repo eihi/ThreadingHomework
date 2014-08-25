@@ -20,7 +20,9 @@ namespace Webserver
         {
             getter = new Semaphore(0,20);
             setter = new Semaphore(20,20);
-            synchronizer = new Semaphore(1, 1);            
+            synchronizer = new Semaphore(1, 1);
+            Thread loggerthread = new Thread(writeToFile);
+            loggerthread.Start();
         }
 
         public void logMessage(string line)
@@ -31,22 +33,25 @@ namespace Webserver
             logFile[++positie] = line;
             synchronizer.Release();
             getter.Release();
-            writeToFile();
         }
 
         public void writeToFile()
         {
             //uit de que (get)
-            getter.WaitOne();
-            if (positie != -1)
+            do
             {
-                using (StreamWriter writer = File.AppendText(CONST.CONTROLSERVER_LOGFILE))
+                getter.WaitOne();
+                if (positie != -1)
                 {
-                    writer.WriteLine(logFile[positie--]+ "\n");
-                    Console.WriteLine("write to file");
+                    using (StreamWriter writer = File.AppendText(CONST.CONTROLSERVER_LOGFILE))
+                    {
+                        writer.WriteLine(logFile[positie--] + "\n");
+                        Console.WriteLine("write to file");
+                    }
                 }
+                setter.Release();
             }
-            setter.Release();
+            while (true);
         }
     }
 }

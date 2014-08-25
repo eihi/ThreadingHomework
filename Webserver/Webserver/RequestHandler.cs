@@ -15,13 +15,15 @@ namespace Webserver
         private Socket socket;
         private ControlSettings controlData;
         private SendResponse sendResponse;
+        private Logger logger;
         private int numberBytes;
         public static Semaphore limit { get; set; }
 
-        public RequestHandler(TcpListener listener, ControlSettings controlData)
+        public RequestHandler(TcpListener listener, ControlSettings controlData, Logger logger)
         {
             this.controlData = controlData;
             sendResponse = new SendResponse();
+            this.logger = logger;
             limit = new Semaphore(1, 20);
 
             while (true)
@@ -194,7 +196,7 @@ namespace Webserver
         }
         public void log(string requestType, string url, EndPoint ip)
         {
-            Logger logger = new Logger();
+            
             string line = "RequestType: " + requestType + "\r\n";
             line += "URL: " + url + "\r\n";
             line += "Ip adres: " + ip + "\r\n";

@@ -11,9 +11,11 @@ namespace Webserver
     public class WebServer
     {
         ControlSettings controlData;
+        private Logger logger;
         public WebServer(ControlSettings controlData)
         {
             this.controlData = controlData;
+            logger = new Logger();
             Thread webThread = new Thread(startServer);
             webThread.Start();
         }
@@ -25,7 +27,7 @@ namespace Webserver
                 listener.Start();
                 Console.WriteLine("WebServer Started - Listening on port:" + controlData.Webport);
 
-                RequestHandler handler = new RequestHandler(listener, controlData);
+                RequestHandler handler = new RequestHandler(listener, controlData, logger);
 
             }
             catch(Exception e)
