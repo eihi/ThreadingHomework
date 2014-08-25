@@ -18,6 +18,7 @@ namespace Webserver
         private TcpClient client;
         private ControlSettings settings;
         private SendResponse sendResponse;
+        private int authenticationlevel = 0;
 
         public ControlRequestHandler(TcpListener listener, ControlSettings settings)
         {
@@ -40,7 +41,8 @@ namespace Webserver
                 SslStream sslStream = createStream(client);
 
                 // Receive data from client
-                string request = ByteArrayToString(ReceiveClientData());
+                string request = ReceiveClientData(sslStream);
+                //Console.WriteLine("received: " + request);
                 
 
                 // Determine request type
@@ -58,13 +60,7 @@ namespace Webserver
                         break;
                 }
 
-                // Authenticate client
-                string username = CONST.TEST_ACCOUNT;
-                string password = CONST.TEST_PASSWORD;
-                int authenticationlevel = AuthenticateUser(username, password);
-                authenticationlevel = 1; //TODO: remove when done with testing
-                username = "";
-                password = "";
+                
 
                 // Create response
                 string response = "";
@@ -92,14 +88,47 @@ namespace Webserver
         private void handlePOST(string request)
         {
             //TODO: handle POST
+            List<string> formdata = new List<string>();
             Console.WriteLine("POST: " + request);
+            string[] postlines = request.Split('\n');
+            formdata = processInlog(postlines[postlines.Length-1]);
             // Save settings
-            //settings.Save();
+            switch(formdata.Count)
+            {
+                case 2:
+                    //inloggegevens
+                    // Authenticate client
+                    string username = formdata[0];
+                    string password = formdata[1];
+                    authenticationlevel = AuthenticateUser(username, password);
+                    username = "";
+                    password = "";
+                    break;
+                case 5:
+                    //check validatie
+                    //settings
+                    //settings.Save();
+                    break;
+            }
+            
+        }
+        public List<string> processInlog(string line)
+        {
+            List<string> formdata = new List<string>();
+
+            string[] data = line.Split('&');
+            for(int i = 0; i < data.Length; i++)
+            {
+                string value = data[i].Split('=')[1];
+                formdata.Add(value);
+            }
+
+            return formdata;
         }
 
         public int AuthenticateUser(string username, string password)
         {
-            /*string connectionstring = "Server=" + CONST.DBCONN_SERVER
+            string connectionstring = "Server=" + CONST.DBCONN_SERVER
                                    + ";Database=" + CONST.DBCONN_DATABASE
                                    + ";Uid=" + CONST.DBCONN_USERID
                                    + ";Pwd=" + CONST.DBCONN_PASSWORD + ";";
@@ -149,7 +178,7 @@ namespace Webserver
             catch (Exception e)
             {
                 Console.WriteLine("Database connection failed:" + e.ToString());
-            }*/
+            }
             return 0;
         }
 
@@ -229,11 +258,35 @@ namespace Webserver
             return html;
         }
 
-        private byte[] ReceiveClientData()
+        private string ReceiveClientData(SslStream sslStream)
         {
-            Byte[] receivedBytes = new Byte[1024];
-            int i = client.Client.Receive(receivedBytes, receivedBytes.Length, 0);
-            return receivedBytes;
+            byte[] buffer = new byte[2048];
+            StringBuilder messageData = new StringBuilder();
+            int bytes = -1;
+            if (sslStream != null)
+            {
+                do
+                {
+
+                    // Read the client's test message.
+                    bytes = sslStream.Read(buffer, 0, buffer.Length);
+
+                    // Use Decoder class to convert from bytes to UTF8 
+                    // in case a character spans two buffers.
+                    Decoder decoder = Encoding.UTF8.GetDecoder();
+                    char[] chars = new char[decoder.GetCharCount(buffer, 0, bytes)];
+                    decoder.GetChars(buffer, 0, bytes, chars, 0);
+                    messageData.Append(chars);
+                    // Check for EOF or an empty message. 
+                    int end = messageData.ToString().IndexOf("\r\n");
+                    if (end != -1)
+                    {
+                        break;
+                    }
+
+                } while (bytes != 0);
+            }
+            return messageData.ToString();
         }
 
         private string ByteArrayToString(byte[] bytes)
