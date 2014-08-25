@@ -105,9 +105,18 @@ namespace Webserver
                     password = "";
                     break;
                 case 5:
-                    //check validatie
+                    if(authenticationlevel != 0)
+                    {
+                        settings.Webport = int.Parse(formdata[0]);
+                        settings.Controlport = int.Parse(formdata[1]);
+                        settings.Webroot = formdata[2];
+                        settings.Defaultpage = formdata[3];
+                        settings.Directorybrowsing = formdata[4] == "on" ? true : false;
+
+                        settings.Save();
+                    }
                     //settings
-                    //settings.Save();
+                    
                     break;
             }
             
