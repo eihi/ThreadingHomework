@@ -220,7 +220,7 @@ namespace Webserver
             string html = "";
             html += "<!doctype html>\n<html lang=\"en\">\n<head>\n<style>div.log {padding:10px;}\ntable {\n";
             html += "border:1px solid #000;\npadding:5px;\n}\ntd {\npadding:5px;\n";
-            html += "}\n</style>\n<script language=\"javascript\">function showLog() {var logElement = document.getElementById \"log\");if (logElement.style.display == \"none\")logElement.style.display = \"block\";} else {	logElement.style.display = \"none\";	}}</script></head>\n<body>\n<div>\n<form method=\"POST\">\n";
+            html += "}\n</style>\n<script language=\"javascript\">\nfunction showLog() {\nvar logElement = document.getElementById (\"log\");\nif (logElement.style.display == \"none\"){\nlogElement.style.display = \"block\";\n} else {\n	logElement.style.display = \"none\";\n	}\n}\n</script>\n</head>\n<body>\n<div>\n<form method=\"POST\">\n";
             html += "<table>\n<tr>\n<td><h1>SuperServer</h1></td>\n<td><h1>Control Panel</h1></td>\n</tr>\n";
             html += "<tr>\n<td>Web port: </td>\n";
             html += "<td><input type=\"text\" name=\"webport\" value=\"" + settings.Webport + "\" " + disabledValue + "></td>\n";
@@ -239,7 +239,7 @@ namespace Webserver
             {
                 log += value + "<br>";
             }
-            html += "</table>\n</form>\n<button onClick=\"showLog();\" value=\"Show Log\"></div>\n<div class=\"log\">" + log + "</div>\n</body>\n</html>\n";
+            html += "</table>\n</form>\n<button onClick=\"showLog();\">Show Log</button></div>\n<div id=\"log\" style=\"display:none\">" + log + "</div>\n</body>\n</html>\n";
             return html;
         }
 
